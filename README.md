@@ -4,7 +4,7 @@ This repository holds the files necessary to build the Canary branch for Chromiu
 
 ## Instructions:
 
-`makepkg`
+`makepkg -si`
 
 ## Credits:
 
