@@ -33,7 +33,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         chromium-include-vector.patch)
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
             '04917e3cd4307d8e31bfb0027a5dce6d086edb10ff8a716024fbb8bb0c7dccf1'
-            'b9bb747a73f778d0e1dbca386bb27ce8c9469713ecdb2dc467d5f3367242dfe8'
+            'a6d3439d72ae19c55a1ee71ae9d969ff1372f44ffd99a8ed0d8e07604594d07c'
             'd1ebc622dc580278d3026a4cacda8142f065c648a94ce1739305cdbe528961ce'
             'c628b810f79510042e46533d6c87257b0c80f8a3acdb4be730228316d6b00439'
             '7411a7df3522938d66b0cd4be7c0e5b45d02daff2548efe63b09e665b552aae9'
