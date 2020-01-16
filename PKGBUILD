@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=81.0.4028.0
+pkgver=81.0.4027.0
 pkgrel=1
 _launcher_ver=6
 pkgdesc="A web browser built for speed, simplicity, and security"
@@ -221,7 +221,7 @@ package() {
   cd "$srcdir/chromium-$pkgver"
 
   # Install binaries
-  install -D out/Release/chrome "$pkgdir/usr/lib/chromium-canary/chromium"
+  install -D out/Release/chromium-canary "$pkgdir/usr/lib/chromium-canary/chromium"
   install -Dm4755 out/Release/chrome_sandbox "$pkgdir/usr/lib/chromium-canary/chrome-sandbox"
   ln -s /usr/lib/chromium-canary/chromedriver "$pkgdir/usr/bin/chromedriver-canary"
 
