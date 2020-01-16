@@ -111,7 +111,7 @@ prepare() {
   sed -i '1s|python$|&2|' third_party/dom_distiller_js/protoc_plugins/*.py
 
   mkdir -p third_party/node/linux/node-linux-x64/bin
-  ln -s /usr/bin/node third_party/node/linux/node-linux-x64/bin/
+  ln -sf /usr/bin/node third_party/node/linux/node-linux-x64/bin/
 
   # Remove bundled libraries for which we will use the system copies; this
   # *should* do what the remove_bundled_libraries.py script does, with the
@@ -221,9 +221,10 @@ package() {
   cd "$srcdir/chromium-$pkgver"
 
   # Install binaries
-  install -D out/Release/chromium-canary "$pkgdir/usr/lib/chromium-canary/chromium"
+  install -D out/Release/chromium-canary "$pkgdir/usr/lib/chromium-canary/chromium-canary"
   install -Dm4755 out/Release/chrome_sandbox "$pkgdir/usr/lib/chromium-canary/chrome-sandbox"
-  ln -s /usr/lib/chromium-canary/chromedriver "$pkgdir/usr/bin/chromedriver-canary"
+  install -D out/Release/crashpad_handler "$pkgdir/usr/lib/chromium-canary/crashpad_handler"
+  ln -sf /usr/lib/chromium-canary/chromedriver "$pkgdir/usr/bin/chromedriver-canary"
 
   # Install .desktop and manpages.
   install -Dm644 chrome/installer/linux/common/desktop.template \
