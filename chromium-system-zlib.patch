@@ -1,6 +1,6 @@
 --- a/third_party/perfetto/gn/BUILD.gn
 +++ b/third_party/perfetto/gn/BUILD.gn
-@@ -314,7 +314,7 @@ if (enable_perfetto_trace_processor || e
+@@ -317,7 +317,7 @@ if (enable_perfetto_zlib) {
          "//buildtools:zlib",
        ]
      } else {

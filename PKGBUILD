@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=81.0.4027.0
+pkgver=81.0.4034.0
 pkgrel=1
 _launcher_ver=6
 pkgdesc="A web browser built for speed, simplicity, and security"
@@ -24,22 +24,22 @@ optdepends=('pepper-flash: support for Flash content'
 install=chromium.install
 source=(https://commondatastorage.googleapis.com/chromium-browser-official/chromium-$pkgver.tar.xz
         chromium-launcher-$_launcher_ver.tar.gz::https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver.tar.gz
-        chromium-system-icu.patch
         chromium-system-zlib.patch
         fix-spammy-unique-font-matching-log.patch
         chromium-widevine.patch
         chromium-skia-harmony.patch
         chromium-unbundle-libxml.patch
-        chromium-include-vector.patch)
+        chromium-include-vector.patch
+        default-constructor-error.patch)
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
             '04917e3cd4307d8e31bfb0027a5dce6d086edb10ff8a716024fbb8bb0c7dccf1'
-            'a6d3439d72ae19c55a1ee71ae9d969ff1372f44ffd99a8ed0d8e07604594d07c'
-            'd1ebc622dc580278d3026a4cacda8142f065c648a94ce1739305cdbe528961ce'
+            'ae292e27e2be927180a0c7b9fffafd44bb915d88e4c5b31ad1e5fd4f700d875d'
             'c628b810f79510042e46533d6c87257b0c80f8a3acdb4be730228316d6b00439'
             '7411a7df3522938d66b0cd4be7c0e5b45d02daff2548efe63b09e665b552aae9'
             '27debc7fb7f64415c1b7747c76ae93ade95db2beb84aa319df21bc0d0cdfb6e2'
             '94e735f4cdeb197ea6b74a80109e51965ca9ed89612e52e179ce5946c3d52f5c'
-            '1483a0dd74a2b2a2846c031fce3ace52818b53a9e853ac10370442a6a7c63b88')
+            '1483a0dd74a2b2a2846c031fce3ace52818b53a9e853ac10370442a6a7c63b88'
+            'd459deb0611e961ce2e1282e9381f95836fc01070e773d93fc97337d082c3b6e')
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
 # Keys are the names in the above script; values are the dependencies in Arch
@@ -90,7 +90,6 @@ prepare() {
     third_party/libxml/chromium/libxml_utils.cc
 
   # Fixes from Gentoo
-  patch -Np1 -i ../chromium-system-icu.patch
   patch -Np1 -i ../chromium-system-zlib.patch
   patch -Np1 -i ../chromium-unbundle-libxml.patch
 
@@ -106,6 +105,7 @@ prepare() {
 
   # Custom fixes
   patch -Np1 -i ../chromium-include-vector.patch
+  patch -Np1 -i ../default-constructor-error.patch
 
   # Force script incompatible with Python 3 to use /usr/bin/python2
   sed -i '1s|python$|&2|' third_party/dom_distiller_js/protoc_plugins/*.py
