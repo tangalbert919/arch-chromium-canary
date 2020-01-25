@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=81.0.4034.0
+pkgver=81.0.4037.2
 pkgrel=1
 _launcher_ver=6
 pkgdesc="A web browser built for speed, simplicity, and security"
@@ -141,7 +141,7 @@ prepare() {
       -i chrome/common/chrome_constants.cc
   sed -e 's|chromium-browser|chromium-canary|g' \
       -i chrome/browser/shell_integration_linux.cc \
-      -i chrome/browser/ui/libgtkui/gtk_util.cc
+      -i chrome/browser/ui/gtk/gtk_util.cc
   sed -e 's|chromium|&-canary|' \
       -i chrome/common/chrome_paths_linux.cc
   sed -e 's|/etc/chromium|&-canary|' \
