@@ -1,0 +1,12 @@
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -509,9 +509,6 @@ config("compiler") {
+         "-Xclang",
+         "-flax-vector-conversions=all",
+       ]
+-    } else if (!is_chromeos ||
+-               default_toolchain != "//build/toolchain/cros:target") {
+-      cflags += [ "-flax-vector-conversions=all" ]
+     }
+   }
+ 

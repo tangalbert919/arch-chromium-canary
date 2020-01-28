@@ -5,3 +5,4 @@
 ../chromium-include-vector.patch
 ../chromium-unbundle-libxml.patch
 ../default-constructor-error.patch
+../clang-remove-flag.patch
