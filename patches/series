@@ -1,8 +1,5 @@
 ../chromium-skia-harmony.patch
 ../chromium-system-zlib.patch
 ../chromium-widevine.patch
-../fix-spammy-unique-font-matching-log.patch
 ../chromium-include-vector.patch
-../chromium-unbundle-libxml.patch
 ../default-constructor-error.patch
-../clang-remove-flag.patch
