@@ -1,0 +1,10 @@
+--- a/chrome/test/data/BUILD.gn
++++ b/chrome/test/data/BUILD.gn
+@@ -26,7 +26,6 @@ grit("webui_test_resources") {
+ 
+ mojom("web_ui_test_bindings") {
+   sources = [
+-    "webui/mojo/foobar.mojom",
+     "webui/web_ui_test.mojom",
+   ]
+ }

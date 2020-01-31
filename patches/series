@@ -2,4 +2,4 @@
 ../chromium-system-zlib.patch
 ../chromium-widevine.patch
 ../chromium-include-vector.patch
-../default-constructor-error.patch
+../fix-webui-tests.patch
