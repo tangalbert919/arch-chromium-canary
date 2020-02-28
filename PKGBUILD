@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=82.0.4045.0
+pkgver=82.0.4071.0
 pkgrel=1
 _launcher_ver=6
 pkgdesc="A web browser built for speed, simplicity, and security"
@@ -28,14 +28,20 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         chromium-widevine.patch
         chromium-skia-harmony.patch
         chromium-include-vector.patch
-        fix-webui-tests.patch)
+        chromium-blink-style_format.patch
+        chromium-gcc-private.patch
+        fix-webui-tests.patch
+        remove-compile-flag.patch)
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
             '04917e3cd4307d8e31bfb0027a5dce6d086edb10ff8a716024fbb8bb0c7dccf1'
-            '4ad749e5783f7c26591ee5f96f947a6957acc98f15a467f2233fc0ed9d035f30'
+            'f22c3738c3546a1be44ceaa9d3c000706ff540b7227cafae32cab7714f58fa35'
             '7411a7df3522938d66b0cd4be7c0e5b45d02daff2548efe63b09e665b552aae9'
             '27debc7fb7f64415c1b7747c76ae93ade95db2beb84aa319df21bc0d0cdfb6e2'
-            '1483a0dd74a2b2a2846c031fce3ace52818b53a9e853ac10370442a6a7c63b88'
-            'da993be22c382caa6b239e504ef72ac9803decfe967efc098f27007f37adfa5c')
+            'aab0c678240643e06bfb718c4b51961432fa17fbb0acd41bf05fd79340c11f43'
+            'b71f67915b8535094029a1e201808c75797deb250bdc6ddc0f99071d4bc31f78'
+            '409b38f520fb7d38037eb10d3f325330a558500bd9883a3a9b217ab93269d0dc'
+            'da993be22c382caa6b239e504ef72ac9803decfe967efc098f27007f37adfa5c'
+            '177e874213f5f51d23fcbdee7244dd8d5f5ab93f4453514f88323e696f56bae0')
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
 # Keys are the names in the above script; values are the dependencies in Arch
@@ -44,7 +50,7 @@ declare -gA _system_libs=(
   [flac]=flac
   [fontconfig]=fontconfig
   [freetype]=freetype2
-  [harfbuzz-ng]=harfbuzz
+  #[harfbuzz-ng]=harfbuzz
   [icu]=icu
   [libdrm]=
   [libjpeg]=libjpeg
@@ -87,6 +93,8 @@ prepare() {
 
   # Fixes from Gentoo
   patch -Np1 -i ../chromium-system-zlib.patch
+  patch -Np1 -i ../chromium-blink-style_format.patch
+  patch -Np1 -i ../chromium-gcc-private.patch
 
   # Load bundled Widevine CDM if available (see chromium-widevine in the AUR)
   # M79 is supposed to download it as a component but it doesn't seem to work
@@ -98,6 +106,7 @@ prepare() {
   # Custom fixes
   patch -Np1 -i ../chromium-include-vector.patch
   patch -Np1 -i ../fix-webui-tests.patch
+  patch -Np1 -i ../remove-compile-flag.patch
 
   # Force script incompatible with Python 3 to use /usr/bin/python2
   sed -i '1s|python$|&2|' third_party/dom_distiller_js/protoc_plugins/*.py
