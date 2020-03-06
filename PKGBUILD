@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=82.0.4071.0
+pkgver=82.0.4078.0
 pkgrel=1
 _launcher_ver=6
 pkgdesc="A web browser built for speed, simplicity, and security"
@@ -29,19 +29,25 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         chromium-skia-harmony.patch
         chromium-include-vector.patch
         chromium-blink-style_format.patch
-        chromium-gcc-private.patch
+        chromium-incomplete-type.patch
+        chromium-include-std.patch
         fix-webui-tests.patch
-        remove-compile-flag.patch)
+        remove-angle-git-requirement.patch
+        remove-compile-flag.patch
+        commit.h)
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
             '04917e3cd4307d8e31bfb0027a5dce6d086edb10ff8a716024fbb8bb0c7dccf1'
-            'f22c3738c3546a1be44ceaa9d3c000706ff540b7227cafae32cab7714f58fa35'
+            '58419633650f1d71dff92f99a8894e3832fc94f82bc82b3b1a7a52bbf2515370'
             '7411a7df3522938d66b0cd4be7c0e5b45d02daff2548efe63b09e665b552aae9'
             '27debc7fb7f64415c1b7747c76ae93ade95db2beb84aa319df21bc0d0cdfb6e2'
             'aab0c678240643e06bfb718c4b51961432fa17fbb0acd41bf05fd79340c11f43'
             'b71f67915b8535094029a1e201808c75797deb250bdc6ddc0f99071d4bc31f78'
-            '409b38f520fb7d38037eb10d3f325330a558500bd9883a3a9b217ab93269d0dc'
+            'bd48e939a5942ec807cae2288f38b8105325367639ff242906d478ecaef3b52b'
+            '85732b0eb5d4ba27997f81402861b77d992faac0280765a065cdf1288d0e08ea'
             'da993be22c382caa6b239e504ef72ac9803decfe967efc098f27007f37adfa5c'
-            '177e874213f5f51d23fcbdee7244dd8d5f5ab93f4453514f88323e696f56bae0')
+            'a140fc5c730a0e6385207f12612ee7c9b447967b4b1bdf3135d4cca5d3f7176d'
+            '177e874213f5f51d23fcbdee7244dd8d5f5ab93f4453514f88323e696f56bae0'
+            '3e6e73bc23bf1a9f54e787f92d10dbd451f358ab365448e5182cb6fb6bebe6bc')
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
 # Keys are the names in the above script; values are the dependencies in Arch
@@ -94,7 +100,6 @@ prepare() {
   # Fixes from Gentoo
   patch -Np1 -i ../chromium-system-zlib.patch
   patch -Np1 -i ../chromium-blink-style_format.patch
-  patch -Np1 -i ../chromium-gcc-private.patch
 
   # Load bundled Widevine CDM if available (see chromium-widevine in the AUR)
   # M79 is supposed to download it as a component but it doesn't seem to work
@@ -107,6 +112,11 @@ prepare() {
   patch -Np1 -i ../chromium-include-vector.patch
   patch -Np1 -i ../fix-webui-tests.patch
   patch -Np1 -i ../remove-compile-flag.patch
+  patch -Np1 -i ../remove-angle-git-requirement.patch
+  patch -Np1 -i ../chromium-incomplete-type.patch
+  patch -Np1 -i ../chromium-include-std.patch
+
+  cp -f ../commit.h third_party/angle/src/commit.h
 
   # Force script incompatible with Python 3 to use /usr/bin/python2
   sed -i '1s|python$|&2|' third_party/dom_distiller_js/protoc_plugins/*.py

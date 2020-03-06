@@ -1,0 +1,64 @@
+/usr/bin/../lib64/gcc/x86_64-pc-linux-gnu/9.2.1/../../../../include/c++/9.2.1/bits/stl_pair.h:215:11: error: field has incomplete type 'ui::AXTree::NodeSetSizePosInSetInfo'
+      _T2 second;                /// @c second is a copy of the second object
+          ^
+/usr/bin/../lib64/gcc/x86_64-pc-linux-gnu/9.2.1/../../../../include/c++/9.2.1/ext/aligned_buffer.h:91:28: note: in instantiation of template class 'std::pair<const int, ui::AXTree::NodeSetSizePosInSetInfo>' requested here
+    : std::aligned_storage<sizeof(_Tp), __alignof__(_Tp)>
+                           ^
+/usr/bin/../lib64/gcc/x86_64-pc-linux-gnu/9.2.1/../../../../include/c++/9.2.1/bits/hashtable_policy.h:233:43: note: in instantiation of template class '__gnu_cxx::__aligned_buffer<std::pair<const int, ui::AXTree::NodeSetSizePosInSetInfo> >' requested here
+      __gnu_cxx::__aligned_buffer<_Value> _M_storage;
+                                          ^
+/usr/bin/../lib64/gcc/x86_64-pc-linux-gnu/9.2.1/../../../../include/c++/9.2.1/bits/hashtable_policy.h:279:40: note: in instantiation of template class 'std::__detail::_Hash_node_value_base<std::pair<const int, ui::AXTree::NodeSetSizePosInSetInfo> >' requested here
+    struct _Hash_node<_Value, false> : _Hash_node_value_base<_Value>
+                                       ^
+/usr/bin/../lib64/gcc/x86_64-pc-linux-gnu/9.2.1/../../../../include/c++/9.2.1/bits/hashtable_policy.h:2028:25: note: in instantiation of template class 'std::__detail::_Hash_node<std::pair<const int, ui::AXTree::NodeSetSizePosInSetInfo>, false>' requested here
+        rebind_traits<typename __node_type::value_type>;
+                               ^
+/usr/bin/../lib64/gcc/x86_64-pc-linux-gnu/9.2.1/../../../../include/c++/9.2.1/bits/hashtable.h:184:15: note: in instantiation of template class 'std::__detail::_Hashtable_alloc<std::allocator<std::__detail::_Hash_node<std::pair<const int, ui::AXTree::NodeSetSizePosInSetInfo>, false> > >' requested here
+      private __detail::_Hashtable_alloc<
+              ^
+/usr/bin/../lib64/gcc/x86_64-pc-linux-gnu/9.2.1/../../../../include/c++/9.2.1/bits/unordered_map.h:105:18: note: in instantiation of template class 'std::_Hashtable<int, std::pair<const int, ui::AXTree::NodeSetSizePosInSetInfo>, std::allocator<std::pair<const int, ui::AXTree::NodeSetSizePosInSetInfo> >, std::__detail::_Select1st, std::equal_to<int>, std::hash<int>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >' requested here
+      _Hashtable _M_h;
+                 ^
+../../ui/accessibility/ax_tree.h:372:7: note: in instantiation of template class 'std::unordered_map<int, ui::AXTree::NodeSetSizePosInSetInfo, std::hash<int>, std::equal_to<int>, std::allocator<std::pair<const int, ui::AXTree::NodeSetSizePosInSetInfo> > >' requested here
+      node_set_size_pos_in_set_info_map_;
+      ^
+../../ui/accessibility/ax_tree.h:326:10: note: forward declaration of 'ui::AXTree::NodeSetSizePosInSetInfo'
+  struct NodeSetSizePosInSetInfo;
+         ^
+
+--- a/ui/accessibility/ax_tree.cc
++++ b/ui/accessibility/ax_tree.cc
+@@ -565,14 +565,8 @@ struct AXTreeUpdateState {
+   const AXTree& tree;
+ };
+ 
+-struct AXTree::NodeSetSizePosInSetInfo {
+-  NodeSetSizePosInSetInfo() = default;
+-  ~NodeSetSizePosInSetInfo() = default;
+-
+-  int32_t pos_in_set = 0;
+-  int32_t set_size = 0;
+-  base::Optional<int> lowest_hierarchical_level;
+-};
++AXTree::NodeSetSizePosInSetInfo::NodeSetSizePosInSetInfo() = default;
++AXTree::NodeSetSizePosInSetInfo::~NodeSetSizePosInSetInfo() = default;
+ 
+ struct AXTree::OrderedSetContent {
+   explicit OrderedSetContent(const AXNode* ordered_set = nullptr)
+--- a/ui/accessibility/ax_tree.h
++++ b/ui/accessibility/ax_tree.h
+@@ -323,7 +323,13 @@ class AX_EXPORT AXTree : public AXNode::
+   bool enable_extra_mac_nodes_ = false;
+ 
+   // Contains pos_in_set and set_size data for an AXNode.
+-  struct NodeSetSizePosInSetInfo;
++  struct NodeSetSizePosInSetInfo {
++    NodeSetSizePosInSetInfo();
++    ~NodeSetSizePosInSetInfo();
++    int32_t pos_in_set;
++    int32_t set_size;
++    base::Optional<int> lowest_hierarchical_level;
++  };
+ 
+   // Represents the content of an ordered set which includes the ordered set
+   // items and the ordered set container if it exists.

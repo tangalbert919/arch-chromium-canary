@@ -3,6 +3,8 @@
 ../chromium-widevine.patch
 ../chromium-include-vector.patch
 ../chromium-blink-style_format.patch
-../chromium-gcc-private.patch
+../chromium-incomplete-type.patch
 ../fix-webui-tests.patch
 ../remove-compile-flag.patch
+../remove-angle-git-requirement.patch
+../chromium-include-std.patch

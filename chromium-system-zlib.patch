@@ -1,6 +1,6 @@
 --- a/third_party/perfetto/gn/BUILD.gn
 +++ b/third_party/perfetto/gn/BUILD.gn
-@@ -298,7 +298,7 @@ if (enable_perfetto_zlib) {
+@@ -296,7 +296,7 @@ if (enable_perfetto_zlib) {
        public_configs = [ "//buildtools:zlib_config" ]
        public_deps = [ "//buildtools:zlib" ]
      } else {
