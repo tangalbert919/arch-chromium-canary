@@ -28,7 +28,7 @@
 
 --- a/ui/accessibility/ax_tree.cc
 +++ b/ui/accessibility/ax_tree.cc
-@@ -565,14 +565,8 @@ struct AXTreeUpdateState {
+@@ -566,14 +566,8 @@ struct AXTreeUpdateState {
    const AXTree& tree;
  };
  

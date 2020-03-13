@@ -1,0 +1,16 @@
+--- a/mojo/public/tools/bindings/mojom.gni
++++ b/mojo/public/tools/bindings/mojom.gni
+@@ -387,13 +387,6 @@ template("mojom") {
+     assert(defined(invoker.component_deps_blink))
+   }
+ 
+-  # Type-mapping may be disabled or we may not generate C++ bindings.
+-  not_needed(invoker,
+-             [
+-               "cpp_typemaps",
+-               "blink_cpp_typemaps",
+-             ])
+-
+   require_full_cpp_deps =
+       !defined(invoker.disallow_native_types) ||
+       !invoker.disallow_native_types || !defined(invoker.disallow_interfaces) ||

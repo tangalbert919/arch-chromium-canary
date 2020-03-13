@@ -5,6 +5,5 @@
 ../chromium-blink-style_format.patch
 ../chromium-incomplete-type.patch
 ../fix-webui-tests.patch
-../remove-compile-flag.patch
-../remove-angle-git-requirement.patch
 ../chromium-include-std.patch
+../remove-cpp-typemap.patch
