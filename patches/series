@@ -4,6 +4,7 @@
 ../chromium-include-vector.patch
 ../chromium-blink-style_format.patch
 ../chromium-incomplete-type.patch
+../chromium-gcc-iterator.patch
 ../fix-webui-tests.patch
 ../chromium-include-std.patch
 ../remove-cpp-typemap.patch

@@ -31,6 +31,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         chromium-blink-style_format.patch
         chromium-incomplete-type.patch
         chromium-include-std.patch
+        chromium-gcc-iterator.patch
         fix-webui-tests.patch
         remove-cpp-typemap.patch)
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -42,6 +43,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             'b71f67915b8535094029a1e201808c75797deb250bdc6ddc0f99071d4bc31f78'
             '9b67eb89776e6be1c97c0e7b72f0f1010bc431c303826f5be21f2ba1556d8f52'
             '85732b0eb5d4ba27997f81402861b77d992faac0280765a065cdf1288d0e08ea'
+            '72ff61d1b9489a7d8647720768366aabc18a22481f223a30713725c9525492f6'
             'da993be22c382caa6b239e504ef72ac9803decfe967efc098f27007f37adfa5c'
             'fb6f7cae126c1dc4416595e8fb69f1da39fb3e8c3b32a6dad1b365af657a69a5')
 
@@ -98,6 +100,7 @@ prepare() {
   patch -Np1 -i ../chromium-blink-style_format.patch
   patch -Np1 -i ../chromium-include-std.patch
   patch -Np1 -i ../chromium-incomplete-type.patch
+  patch -Np1 -i ../chromium-gcc-iterator.patch
 
   # Load bundled Widevine CDM if available (see chromium-widevine in the AUR)
   # M79 is supposed to download it as a component but it doesn't seem to work
