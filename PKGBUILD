@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=82.0.4085.0
+pkgver=83.0.4100.0
 pkgrel=1
 _launcher_ver=6
 pkgdesc="A web browser built for speed, simplicity, and security"
@@ -30,22 +30,22 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         chromium-include-vector.patch
         chromium-blink-style_format.patch
         chromium-incomplete-type.patch
-        chromium-include-std.patch
         chromium-gcc-iterator.patch
+        chromium-clang-std.patch
         fix-webui-tests.patch
         remove-cpp-typemap.patch)
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
             '04917e3cd4307d8e31bfb0027a5dce6d086edb10ff8a716024fbb8bb0c7dccf1'
-            '58419633650f1d71dff92f99a8894e3832fc94f82bc82b3b1a7a52bbf2515370'
+            'b1e0e61280c777ffd3c744495bc9140baf83893d77c703239470be44a4bc7a65'
             '7411a7df3522938d66b0cd4be7c0e5b45d02daff2548efe63b09e665b552aae9'
             '27debc7fb7f64415c1b7747c76ae93ade95db2beb84aa319df21bc0d0cdfb6e2'
             'aab0c678240643e06bfb718c4b51961432fa17fbb0acd41bf05fd79340c11f43'
             'b71f67915b8535094029a1e201808c75797deb250bdc6ddc0f99071d4bc31f78'
-            '9b67eb89776e6be1c97c0e7b72f0f1010bc431c303826f5be21f2ba1556d8f52'
-            '85732b0eb5d4ba27997f81402861b77d992faac0280765a065cdf1288d0e08ea'
-            '72ff61d1b9489a7d8647720768366aabc18a22481f223a30713725c9525492f6'
+            '6e1db72e742a2132ebac09d7ca14c10ed958a00e0bdb3a6a9905e8e594649c8c'
+            'a1a1ff1374a8187f5536aa2ba2f70bd26be0238b5f4529d4e166a51cc89b50e3'
+            '8d7abdcb84fff71310bb7819d3ad143b9374d43824cea2c0fdc9cee949012850'
             'da993be22c382caa6b239e504ef72ac9803decfe967efc098f27007f37adfa5c'
-            'fb6f7cae126c1dc4416595e8fb69f1da39fb3e8c3b32a6dad1b365af657a69a5')
+            'd994d8e9b84f26624dd49d3e1c83aefdac280419ceec8bd3bf09e5ef3cf43de8')
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
 # Keys are the names in the above script; values are the dependencies in Arch
@@ -98,7 +98,6 @@ prepare() {
   # Fixes from Gentoo
   patch -Np1 -i ../chromium-system-zlib.patch
   patch -Np1 -i ../chromium-blink-style_format.patch
-  patch -Np1 -i ../chromium-include-std.patch
   patch -Np1 -i ../chromium-incomplete-type.patch
   patch -Np1 -i ../chromium-gcc-iterator.patch
 
@@ -113,6 +112,7 @@ prepare() {
   patch -Np1 -i ../chromium-include-vector.patch
   patch -Np1 -i ../fix-webui-tests.patch
   patch -Np1 -i ../remove-cpp-typemap.patch
+  patch -Np1 -i ../chromium-clang-std.patch
 
   # Force script incompatible with Python 3 to use /usr/bin/python2
   sed -i '1s|python$|&2|' third_party/dom_distiller_js/protoc_plugins/*.py
