@@ -1,6 +1,6 @@
 --- a/mojo/public/tools/bindings/mojom.gni
 +++ b/mojo/public/tools/bindings/mojom.gni
-@@ -387,13 +387,6 @@ template("mojom") {
+@@ -481,13 +481,6 @@ template("mojom") {
      assert(defined(invoker.component_deps_blink))
    }
  

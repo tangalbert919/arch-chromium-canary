@@ -28,7 +28,7 @@
 
 --- a/ui/accessibility/ax_tree.cc
 +++ b/ui/accessibility/ax_tree.cc
-@@ -566,14 +566,8 @@ struct AXTreeUpdateState {
+@@ -567,14 +567,8 @@ struct AXTreeUpdateState {
    const AXTree& tree;
  };
  
@@ -47,7 +47,7 @@
    explicit OrderedSetContent(const AXNode* ordered_set = nullptr)
 --- a/ui/accessibility/ax_tree.h
 +++ b/ui/accessibility/ax_tree.h
-@@ -323,7 +323,13 @@ class AX_EXPORT AXTree : public AXNode::
+@@ -328,7 +328,13 @@ class AX_EXPORT AXTree : public AXNode::
    bool enable_extra_mac_nodes_ = false;
  
    // Contains pos_in_set and set_size data for an AXNode.

@@ -6,5 +6,5 @@
 ../chromium-incomplete-type.patch
 ../chromium-gcc-iterator.patch
 ../fix-webui-tests.patch
-../chromium-include-std.patch
 ../remove-cpp-typemap.patch
+../chromium-clang-std.patch
