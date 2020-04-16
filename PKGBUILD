@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=83.0.4100.0
+pkgver=84.0.4106.0
 pkgrel=1
 _launcher_ver=6
 pkgdesc="A web browser built for speed, simplicity, and security"
@@ -12,7 +12,7 @@ arch=('x86_64')
 url="https://www.chromium.org/Home"
 license=('BSD')
 depends=('gtk3' 'nss' 'alsa-lib' 'xdg-utils' 'libxss' 'libcups' 'libgcrypt'
-         'ttf-font' 'systemd' 'dbus' 'libpulse' 'pciutils' 'json-glib'
+         'ttf-liberation' 'systemd' 'dbus' 'libpulse' 'pciutils' 'json-glib'
          'desktop-file-utils' 'hicolor-icon-theme')
 makedepends=('python' 'python2' 'gperf' 'yasm' 'mesa' 'ninja' 'nodejs' 'git'
              'pipewire' 'clang' 'lld' 'gn' 'java-runtime-headless')
@@ -31,9 +31,10 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         chromium-blink-style_format.patch
         chromium-incomplete-type.patch
         chromium-gcc-iterator.patch
-        chromium-clang-std.patch
-        fix-webui-tests.patch
-        remove-cpp-typemap.patch)
+        chromium-83-gcc-include.patch
+        chromium-gcc-template.patch
+        chromium-83-gcc-iterator.patch
+        fix-webui-tests.patch)
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
             '04917e3cd4307d8e31bfb0027a5dce6d086edb10ff8a716024fbb8bb0c7dccf1'
             'b1e0e61280c777ffd3c744495bc9140baf83893d77c703239470be44a4bc7a65'
@@ -43,9 +44,10 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             'b71f67915b8535094029a1e201808c75797deb250bdc6ddc0f99071d4bc31f78'
             '6e1db72e742a2132ebac09d7ca14c10ed958a00e0bdb3a6a9905e8e594649c8c'
             'a1a1ff1374a8187f5536aa2ba2f70bd26be0238b5f4529d4e166a51cc89b50e3'
-            '8d7abdcb84fff71310bb7819d3ad143b9374d43824cea2c0fdc9cee949012850'
-            'da993be22c382caa6b239e504ef72ac9803decfe967efc098f27007f37adfa5c'
-            'd994d8e9b84f26624dd49d3e1c83aefdac280419ceec8bd3bf09e5ef3cf43de8')
+            '9c4291374065381f5197cf8c37bdcfa8e17dc807f598149ba5b7c51c8e944967'
+            'adf9b770ca2324a77b33ec4bb2f19b5007c8c7459f2d3df7a648e0fd6b4342fd'
+            'dbd2f7fa12f841d1fc52e78b2b446107037232a33d5934ad9c0718b5531ac660'
+            'da993be22c382caa6b239e504ef72ac9803decfe967efc098f27007f37adfa5c')
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
 # Keys are the names in the above script; values are the dependencies in Arch
@@ -55,7 +57,7 @@ declare -gA _system_libs=(
   [fontconfig]=fontconfig
   [freetype]=freetype2
   #[harfbuzz-ng]=harfbuzz
-  [icu]=icu
+  #[icu]=icu
   [libdrm]=
   #[libjpeg]=libjpeg
   #[libpng]=libpng    # https://crbug.com/752403#c10
@@ -100,6 +102,9 @@ prepare() {
   patch -Np1 -i ../chromium-blink-style_format.patch
   patch -Np1 -i ../chromium-incomplete-type.patch
   patch -Np1 -i ../chromium-gcc-iterator.patch
+  patch -Np1 -i ../chromium-gcc-template.patch
+  patch -Np1 -i ../chromium-83-gcc-iterator.patch
+  patch -Np1 -i ../chromium-83-gcc-include.patch
 
   # Load bundled Widevine CDM if available (see chromium-widevine in the AUR)
   # M79 is supposed to download it as a component but it doesn't seem to work
@@ -111,8 +116,6 @@ prepare() {
   # Custom fixes
   patch -Np1 -i ../chromium-include-vector.patch
   patch -Np1 -i ../fix-webui-tests.patch
-  patch -Np1 -i ../remove-cpp-typemap.patch
-  patch -Np1 -i ../chromium-clang-std.patch
 
   # Force script incompatible with Python 3 to use /usr/bin/python2
   sed -i '1s|python$|&2|' third_party/dom_distiller_js/protoc_plugins/*.py
@@ -147,8 +150,7 @@ prepare() {
   sed -e 's|"Chromium|&-canary|g' \
       -i chrome/common/chrome_constants.cc
   sed -e 's|chromium-browser|chromium-canary|g' \
-      -i chrome/browser/shell_integration_linux.cc \
-      -i chrome/browser/ui/gtk/gtk_util.cc
+      -i chrome/browser/shell_integration_linux.cc
   sed -e 's|chromium|&-canary|' \
       -i chrome/common/chrome_paths_linux.cc
   sed -e 's|/etc/chromium|&-canary|' \
