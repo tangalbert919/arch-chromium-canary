@@ -10,8 +10,6 @@ is no STL iterator.
  .../core/v8/serialization/serialized_script_value.h | 13 +++++++++----
  1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/third_party/blink/renderer/bindings/core/v8/serialization/serialized_script_value.h b/third_party/blink/renderer/bindings/core/v8/serialization/serialized_script_value.h
-index bbf10ef..53d98c9 100644
 --- a/third_party/blink/renderer/bindings/core/v8/serialization/serialized_script_value.h
 +++ b/third_party/blink/renderer/bindings/core/v8/serialization/serialized_script_value.h
 @@ -268,12 +268,17 @@ class CORE_EXPORT SerializedScriptValue
@@ -36,6 +34,3 @@ index bbf10ef..53d98c9 100644
    }
  
    // Returns true after serializing script values that remote origins cannot
--- 
-2.24.1
-

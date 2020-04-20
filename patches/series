@@ -8,4 +8,4 @@
 ../chromium-83-gcc-iterator.patch
 ../chromium-83-gcc-include.patch
 ../fix-webui-tests.patch
-../chromium-gcc-template.patch
+../chromium-84-include.patch

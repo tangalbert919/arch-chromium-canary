@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=84.0.4106.0
+pkgver=84.0.4108.2
 pkgrel=1
 _launcher_ver=6
 pkgdesc="A web browser built for speed, simplicity, and security"
@@ -32,21 +32,21 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         chromium-incomplete-type.patch
         chromium-gcc-iterator.patch
         chromium-83-gcc-include.patch
-        chromium-gcc-template.patch
         chromium-83-gcc-iterator.patch
+        chromium-84-include.patch
         fix-webui-tests.patch)
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
             '04917e3cd4307d8e31bfb0027a5dce6d086edb10ff8a716024fbb8bb0c7dccf1'
-            'b1e0e61280c777ffd3c744495bc9140baf83893d77c703239470be44a4bc7a65'
+            '139e30f785ed5db6be4f8ec86fb205598e540d4adeb0dc45ec692076cf03c2f4'
             '7411a7df3522938d66b0cd4be7c0e5b45d02daff2548efe63b09e665b552aae9'
             '27debc7fb7f64415c1b7747c76ae93ade95db2beb84aa319df21bc0d0cdfb6e2'
             'aab0c678240643e06bfb718c4b51961432fa17fbb0acd41bf05fd79340c11f43'
             'b71f67915b8535094029a1e201808c75797deb250bdc6ddc0f99071d4bc31f78'
             '6e1db72e742a2132ebac09d7ca14c10ed958a00e0bdb3a6a9905e8e594649c8c'
             'a1a1ff1374a8187f5536aa2ba2f70bd26be0238b5f4529d4e166a51cc89b50e3'
-            '9c4291374065381f5197cf8c37bdcfa8e17dc807f598149ba5b7c51c8e944967'
-            'adf9b770ca2324a77b33ec4bb2f19b5007c8c7459f2d3df7a648e0fd6b4342fd'
-            'dbd2f7fa12f841d1fc52e78b2b446107037232a33d5934ad9c0718b5531ac660'
+            'ef25e2c41fdb692ef0cc6c2386b03e6ff2a75298ed10fc6fe0be3d514b8f7246'
+            'd5b000dcb692fae3f36f71d2ccb5236f89f84af5bcfbdfbe9a4e31c5c47a23bb'
+            'dfe30bae803fa6c67fac21b10701e36912fc7a3cb82661a4f77f51e4f9242f58'
             'da993be22c382caa6b239e504ef72ac9803decfe967efc098f27007f37adfa5c')
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -102,7 +102,6 @@ prepare() {
   patch -Np1 -i ../chromium-blink-style_format.patch
   patch -Np1 -i ../chromium-incomplete-type.patch
   patch -Np1 -i ../chromium-gcc-iterator.patch
-  patch -Np1 -i ../chromium-gcc-template.patch
   patch -Np1 -i ../chromium-83-gcc-iterator.patch
   patch -Np1 -i ../chromium-83-gcc-include.patch
 
@@ -116,6 +115,7 @@ prepare() {
   # Custom fixes
   patch -Np1 -i ../chromium-include-vector.patch
   patch -Np1 -i ../fix-webui-tests.patch
+  #patch -Np1 -i ../chromium-84-include.patch
 
   # Force script incompatible with Python 3 to use /usr/bin/python2
   sed -i '1s|python$|&2|' third_party/dom_distiller_js/protoc_plugins/*.py
