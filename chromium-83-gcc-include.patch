@@ -7,28 +7,6 @@ Subject: [PATCH] IWYU: std::find is defined in algorithm
  extensions/browser/install/crx_install_error.cc | 2 ++
  1 file changed, 2 insertions(+)
 
---- a/extensions/browser/install/crx_install_error.cc
-+++ b/extensions/browser/install/crx_install_error.cc
-@@ -4,6 +4,8 @@
- 
- #include "extensions/browser/install/crx_install_error.h"
- 
-+#include <algorithm>
-+
- #include "base/logging.h"
- #include "extensions/browser/install/sandboxed_unpacker_failure_reason.h"
- 
---- a/third_party/blink/renderer/core/html/trust_token_attribute_parsing.h
-+++ b/third_party/blink/renderer/core/html/trust_token_attribute_parsing.h
-@@ -5,6 +5,8 @@
- #ifndef THIRD_PARTY_BLINK_RENDERER_CORE_HTML_TRUST_TOKEN_ATTRIBUTE_PARSING_H_
- #define THIRD_PARTY_BLINK_RENDERER_CORE_HTML_TRUST_TOKEN_ATTRIBUTE_PARSING_H_
- 
-+#include <memory>
-+
- #include "base/optional.h"
- #include "services/network/public/mojom/trust_tokens.mojom-blink-forward.h"
- #include "third_party/blink/renderer/core/core_export.h"
 --- a/chrome/browser/performance_manager/graph/policies/background_tab_loading_policy_helpers.cc
 +++ b/chrome/browser/performance_manager/graph/policies/background_tab_loading_policy_helpers.cc
 @@ -2,6 +2,8 @@

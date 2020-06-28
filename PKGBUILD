@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=84.0.4108.2
+pkgver=84.0.4130.1
 pkgrel=1
 _launcher_ver=6
 pkgdesc="A web browser built for speed, simplicity, and security"
@@ -29,11 +29,8 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         chromium-skia-harmony.patch
         chromium-include-vector.patch
         chromium-blink-style_format.patch
-        chromium-incomplete-type.patch
-        chromium-gcc-iterator.patch
         chromium-83-gcc-include.patch
         chromium-83-gcc-iterator.patch
-        chromium-84-include.patch
         fix-webui-tests.patch)
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
             '04917e3cd4307d8e31bfb0027a5dce6d086edb10ff8a716024fbb8bb0c7dccf1'
@@ -42,11 +39,8 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             '27debc7fb7f64415c1b7747c76ae93ade95db2beb84aa319df21bc0d0cdfb6e2'
             'aab0c678240643e06bfb718c4b51961432fa17fbb0acd41bf05fd79340c11f43'
             'b71f67915b8535094029a1e201808c75797deb250bdc6ddc0f99071d4bc31f78'
-            '6e1db72e742a2132ebac09d7ca14c10ed958a00e0bdb3a6a9905e8e594649c8c'
-            'a1a1ff1374a8187f5536aa2ba2f70bd26be0238b5f4529d4e166a51cc89b50e3'
-            'ef25e2c41fdb692ef0cc6c2386b03e6ff2a75298ed10fc6fe0be3d514b8f7246'
+            'e0597f4ef8fabadff3e879c9700de4d3540acee23101c24bee5412d0ca7aab4f'
             'd5b000dcb692fae3f36f71d2ccb5236f89f84af5bcfbdfbe9a4e31c5c47a23bb'
-            'dfe30bae803fa6c67fac21b10701e36912fc7a3cb82661a4f77f51e4f9242f58'
             'da993be22c382caa6b239e504ef72ac9803decfe967efc098f27007f37adfa5c')
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -66,9 +60,8 @@ declare -gA _system_libs=(
   [libxml]=libxml2
   [libxslt]=libxslt
   [opus]=opus
-  [re2]=re2
+  #[re2]=re2
   [snappy]=snappy
-  [yasm]=
   [zlib]=minizip
 )
 _unwanted_bundled_libs=(
@@ -83,6 +76,13 @@ depends+=(${_system_libs[@]})
 _google_api_key=apikey
 _google_default_client_id=noid
 _google_default_client_secret=nosecret
+
+# Taken from PKGBUILD for chromium-dev on AUR.
+if [ ! -f "${BUILDDIR}/PKGBUILD" ]; then
+  _builddir="/${pkgname}"
+fi
+
+_clang_path="${BUILDDIR}${_builddir}/src/chromium-${pkgver}/third_party/llvm-build/Release+Asserts/bin/"
 
 prepare() {
   cd "$srcdir/chromium-$pkgver"
@@ -100,8 +100,6 @@ prepare() {
   # Fixes from Gentoo
   patch -Np1 -i ../chromium-system-zlib.patch
   patch -Np1 -i ../chromium-blink-style_format.patch
-  patch -Np1 -i ../chromium-incomplete-type.patch
-  patch -Np1 -i ../chromium-gcc-iterator.patch
   patch -Np1 -i ../chromium-83-gcc-iterator.patch
   patch -Np1 -i ../chromium-83-gcc-include.patch
 
@@ -115,7 +113,6 @@ prepare() {
   # Custom fixes
   patch -Np1 -i ../chromium-include-vector.patch
   patch -Np1 -i ../fix-webui-tests.patch
-  #patch -Np1 -i ../chromium-84-include.patch
 
   # Force script incompatible with Python 3 to use /usr/bin/python2
   sed -i '1s|python$|&2|' third_party/dom_distiller_js/protoc_plugins/*.py
@@ -131,13 +128,15 @@ prepare() {
     find "third_party/$_lib" -type f \
       \! -path "third_party/$_lib/chromium/*" \
       \! -path "third_party/$_lib/google/*" \
-      \! -path 'third_party/yasm/run_yasm.py' \
       \! -regex '.*\.\(gn\|gni\|isolate\)' \
       -delete
   done
 
   python2 build/linux/unbundle/replace_gn_files.py \
     --system-libraries "${!_system_libs[@]}"
+
+  # Download prebuilt clang from Google, as system clang does not work here.
+  tools/clang/scripts/update.py
 
   # Use chromium-canary as brand name. Modified from chromium-dev PKGBUILD in the AUR.
   sed -e 's|=Chromium|&-canary|g' \
@@ -150,7 +149,8 @@ prepare() {
   sed -e 's|"Chromium|&-canary|g' \
       -i chrome/common/chrome_constants.cc
   sed -e 's|chromium-browser|chromium-canary|g' \
-      -i chrome/browser/shell_integration_linux.cc
+      -i chrome/browser/shell_integration_linux.cc \
+      -i ui/gtk/gtk_util.cc
   sed -e 's|chromium|&-canary|' \
       -i chrome/common/chrome_paths_linux.cc
   sed -e 's|/etc/chromium|&-canary|' \
@@ -171,9 +171,9 @@ build() {
     export CCACHE_SLOPPINESS=time_macros
   fi
 
-  export CC=clang
-  export CXX=clang++
-  export AR=ar
+  export CC="clang"
+  export CXX="clang++"
+  export AR="llvm-ar"
   export NM=nm
 
   local _flags=(
@@ -190,7 +190,7 @@ build() {
     'use_gnome_keyring=false'
     'use_sysroot=false'
     'linux_use_bundled_binutils=false'
-    'use_custom_libcxx=false'
+    'use_custom_libcxx=true' # Required this time around.
     'enable_hangout_services_extension=true'
     'enable_widevine=true'
     'enable_nacl=false'
