@@ -1,8 +1,1 @@
 ../chromium-skia-harmony.patch
-../chromium-system-zlib.patch
-../chromium-widevine.patch
-../chromium-include-vector.patch
-../chromium-blink-style_format.patch
-../chromium-83-gcc-iterator.patch
-../chromium-83-gcc-include.patch
-../fix-webui-tests.patch

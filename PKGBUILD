@@ -4,9 +4,10 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=84.0.4130.1
+pkgver=88.0.4314.0
 pkgrel=1
 _launcher_ver=6
+_gcc_patchset=1
 pkgdesc="A web browser built for speed, simplicity, and security"
 arch=('x86_64')
 url="https://www.chromium.org/Home"
@@ -14,34 +15,24 @@ license=('BSD')
 depends=('gtk3' 'nss' 'alsa-lib' 'xdg-utils' 'libxss' 'libcups' 'libgcrypt'
          'ttf-liberation' 'systemd' 'dbus' 'libpulse' 'pciutils' 'json-glib'
          'desktop-file-utils' 'hicolor-icon-theme')
-makedepends=('python' 'python2' 'gperf' 'yasm' 'mesa' 'ninja' 'nodejs' 'git'
-             'pipewire' 'clang' 'lld' 'gn' 'java-runtime-headless')
+makedepends=('python' 'python2' 'gperf' 'mesa' 'ninja' 'nodejs' 'git' 'libva'
+             'libpipewire02' 'clang' 'lld' 'gn' 'java-runtime-headless'
+             'python2-setuptools')
 optdepends=('pepper-flash: support for Flash content'
-            'pipewire: WebRTC desktop sharing under Wayland'
+            'libpipewire02: WebRTC desktop sharing under Wayland'
+            'libva: hardware-accelerated video decode [experimental]'
             'kdialog: needed for file dialogs in KDE'
             'org.freedesktop.secrets: password storage backend on GNOME / Xfce'
             'kwallet: for storing passwords in KWallet on KDE desktops')
 install=chromium.install
 source=(https://commondatastorage.googleapis.com/chromium-browser-official/chromium-$pkgver.tar.xz
         chromium-launcher-$_launcher_ver.tar.gz::https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver.tar.gz
-        chromium-system-zlib.patch
-        chromium-widevine.patch
-        chromium-skia-harmony.patch
-        chromium-include-vector.patch
-        chromium-blink-style_format.patch
-        chromium-83-gcc-include.patch
-        chromium-83-gcc-iterator.patch
-        fix-webui-tests.patch)
+        https://github.com/stha09/chromium-patches/releases/download/chromium-${pkgver%%.*}-patchset-$_gcc_patchset/chromium-${pkgver%%.*}-patchset-$_gcc_patchset.tar.xz
+        chromium-skia-harmony.patch)
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
             '04917e3cd4307d8e31bfb0027a5dce6d086edb10ff8a716024fbb8bb0c7dccf1'
-            '139e30f785ed5db6be4f8ec86fb205598e540d4adeb0dc45ec692076cf03c2f4'
-            '7411a7df3522938d66b0cd4be7c0e5b45d02daff2548efe63b09e665b552aae9'
-            '27debc7fb7f64415c1b7747c76ae93ade95db2beb84aa319df21bc0d0cdfb6e2'
-            'aab0c678240643e06bfb718c4b51961432fa17fbb0acd41bf05fd79340c11f43'
-            'b71f67915b8535094029a1e201808c75797deb250bdc6ddc0f99071d4bc31f78'
-            'e0597f4ef8fabadff3e879c9700de4d3540acee23101c24bee5412d0ca7aab4f'
-            'd5b000dcb692fae3f36f71d2ccb5236f89f84af5bcfbdfbe9a4e31c5c47a23bb'
-            'da993be22c382caa6b239e504ef72ac9803decfe967efc098f27007f37adfa5c')
+            'c3de26352754935ab7aa95adbf345cd7a1edae4ed200e58f6520bc7fe64dd637'
+            'acaf19e245ca8201502d4ff051e54197e2a19d90016a1e5d76426a62f9918513')
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
 # Keys are the names in the above script; values are the dependencies in Arch
@@ -50,23 +41,22 @@ declare -gA _system_libs=(
   [flac]=flac
   [fontconfig]=fontconfig
   [freetype]=freetype2
-  #[harfbuzz-ng]=harfbuzz
-  #[icu]=icu
+  [harfbuzz-ng]=harfbuzz
+  [icu]=icu
   [libdrm]=
-  #[libjpeg]=libjpeg
-  #[libpng]=libpng    # https://crbug.com/752403#c10
-  [libvpx]=libvpx
+  [libjpeg]=libjpeg
+  [libpng]=libpng
+  #[libvpx]=libvpx
   [libwebp]=libwebp
   [libxml]=libxml2
   [libxslt]=libxslt
   [opus]=opus
-  #[re2]=re2
+  [re2]=re2
   [snappy]=snappy
   [zlib]=minizip
 )
 _unwanted_bundled_libs=(
-  ${!_system_libs[@]}
-  ${_system_libs[libjpeg]+libjpeg_turbo}
+  $(printf "%s\n" ${!_system_libs[@]} | sed 's/^libjpeg$/&_turbo/')
 )
 depends+=(${_system_libs[@]})
 
@@ -77,7 +67,7 @@ _google_api_key=apikey
 _google_default_client_id=noid
 _google_default_client_secret=nosecret
 
-# Taken from PKGBUILD for chromium-dev on AUR.
+# Taken from chromium-dev PKGBUILD
 if [ ! -f "${BUILDDIR}/PKGBUILD" ]; then
   _builddir="/${pkgname}"
 fi
@@ -95,24 +85,16 @@ prepare() {
   sed -i -e 's/\<xmlMalloc\>/malloc/' -e 's/\<xmlFree\>/free/' \
     third_party/blink/renderer/core/xml/*.cc \
     third_party/blink/renderer/core/xml/parser/xml_document_parser.cc \
-    third_party/libxml/chromium/libxml_utils.cc
-
-  # Fixes from Gentoo
-  patch -Np1 -i ../chromium-system-zlib.patch
-  patch -Np1 -i ../chromium-blink-style_format.patch
-  patch -Np1 -i ../chromium-83-gcc-iterator.patch
-  patch -Np1 -i ../chromium-83-gcc-include.patch
-
-  # Load bundled Widevine CDM if available (see chromium-widevine in the AUR)
-  # M79 is supposed to download it as a component but it doesn't seem to work
-  patch -Np1 -i ../chromium-widevine.patch
+    third_party/libxml/chromium/*.cc
 
   # https://crbug.com/skia/6663#c10
   patch -Np1 -i ../chromium-skia-harmony.patch
-
-  # Custom fixes
-  patch -Np1 -i ../chromium-include-vector.patch
-  patch -Np1 -i ../fix-webui-tests.patch
+  
+  # Fixes for building with libstdc++ instead of libc++
+  patch -Np1 -i ../patches/chromium-87-openscreen-include.patch
+  patch -Np1 -i ../patches/chromium-87-compiler.patch
+  patch -Np1 -i ../patches/chromium-88-ityp-include.patch
+  patch -Np1 -i ../patches/chromium-88-dirmd-revert.patch
 
   # Force script incompatible with Python 3 to use /usr/bin/python2
   sed -i '1s|python$|&2|' third_party/dom_distiller_js/protoc_plugins/*.py
@@ -128,6 +110,7 @@ prepare() {
     find "third_party/$_lib" -type f \
       \! -path "third_party/$_lib/chromium/*" \
       \! -path "third_party/$_lib/google/*" \
+      \! -path "third_party/harfbuzz-ng/utils/hb_scoped.h" \
       \! -regex '.*\.\(gn\|gni\|isolate\)' \
       -delete
   done
@@ -171,9 +154,12 @@ build() {
     export CCACHE_SLOPPINESS=time_macros
   fi
 
-  export CC="clang"
-  export CXX="clang++"
-  export AR="llvm-ar"
+  export CC="${_clang_path}clang"
+  export CXX="${_clang_path}clang++"
+  export AR="${_clang_path}llvm-ar"
+  #export CC=clang
+  #export CXX=clang++
+  #export AR=llvm-ar
   export NM=nm
 
   local _flags=(
@@ -189,13 +175,11 @@ build() {
     'link_pulseaudio=true'
     'use_gnome_keyring=false'
     'use_sysroot=false'
-    'linux_use_bundled_binutils=false'
-    'use_custom_libcxx=true' # Required this time around.
+    'use_custom_libcxx=false'
     'enable_hangout_services_extension=true'
     'enable_widevine=true'
+    'use_vaapi=true'
     'enable_nacl=false'
-    'enable_swiftshader=false'
-    'angle_enable_commit_id=false'
     "google_api_key=\"${_google_api_key}\""
     "google_default_client_id=\"${_google_default_client_id}\""
     "google_default_client_secret=\"${_google_default_client_secret}\""
