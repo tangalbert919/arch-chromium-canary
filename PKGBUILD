@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=88.0.4314.0
+pkgver=88.0.4317.0
 pkgrel=1
 _launcher_ver=6
 _gcc_patchset=1
@@ -28,11 +28,13 @@ install=chromium.install
 source=(https://commondatastorage.googleapis.com/chromium-browser-official/chromium-$pkgver.tar.xz
         chromium-launcher-$_launcher_ver.tar.gz::https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver.tar.gz
         https://github.com/stha09/chromium-patches/releases/download/chromium-${pkgver%%.*}-patchset-$_gcc_patchset/chromium-${pkgver%%.*}-patchset-$_gcc_patchset.tar.xz
-        chromium-skia-harmony.patch)
+        chromium-skia-harmony.patch
+        chromium-88-include.patch)
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
             '04917e3cd4307d8e31bfb0027a5dce6d086edb10ff8a716024fbb8bb0c7dccf1'
             'c3de26352754935ab7aa95adbf345cd7a1edae4ed200e58f6520bc7fe64dd637'
-            'acaf19e245ca8201502d4ff051e54197e2a19d90016a1e5d76426a62f9918513')
+            'acaf19e245ca8201502d4ff051e54197e2a19d90016a1e5d76426a62f9918513'
+            '9e0dacccc15362146cbb0f8bea18aabc7812c1c171ee58dc7132cb35f3411fe2')
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
 # Keys are the names in the above script; values are the dependencies in Arch
@@ -95,6 +97,9 @@ prepare() {
   patch -Np1 -i ../patches/chromium-87-compiler.patch
   patch -Np1 -i ../patches/chromium-88-ityp-include.patch
   patch -Np1 -i ../patches/chromium-88-dirmd-revert.patch
+  
+  # Custom fixes
+  patch -Np1 -i ../chromium-88-include.patch
 
   # Force script incompatible with Python 3 to use /usr/bin/python2
   sed -i '1s|python$|&2|' third_party/dom_distiller_js/protoc_plugins/*.py

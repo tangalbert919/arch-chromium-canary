@@ -4,6 +4,8 @@ This repository holds the files necessary to build the Canary branch for Chromiu
 
 ## Instructions:
 
+Run this command to install missing dependencies before building, and then the browser itself after it is successfully built:
+
 `makepkg -si`
 
 ## Credits:
