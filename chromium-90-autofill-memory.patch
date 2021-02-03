@@ -1,0 +1,10 @@
+--- a/components/autofill/core/browser/data_model/contact_info.h
++++ b/components/autofill/core/browser/data_model/contact_info.h
+@@ -5,6 +5,7 @@
+ #ifndef COMPONENTS_AUTOFILL_CORE_BROWSER_DATA_MODEL_CONTACT_INFO_H_
+ #define COMPONENTS_AUTOFILL_CORE_BROWSER_DATA_MODEL_CONTACT_INFO_H_
+ 
++#include <memory>
+ #include <string>
+ #include <vector>
+ 
