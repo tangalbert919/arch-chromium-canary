@@ -4,10 +4,10 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=90.0.4407.0
+pkgver=90.0.4414.0
 pkgrel=1
 _launcher_ver=7
-_gcc_patchset=1
+_gcc_patchset=3
 pkgdesc="A web browser built for speed, simplicity, and security"
 arch=('x86_64')
 url="https://www.chromium.org/Home"
@@ -27,17 +27,11 @@ install=chromium.install
 source=(https://commondatastorage.googleapis.com/chromium-browser-official/chromium-$pkgver.tar.xz
         chromium-launcher-$_launcher_ver.tar.gz::https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver.tar.gz
         https://github.com/stha09/chromium-patches/releases/download/chromium-${pkgver%%.*}-patchset-$_gcc_patchset/chromium-${pkgver%%.*}-patchset-$_gcc_patchset.tar.xz
-        chromium-skia-harmony.patch
-        chromium-90-viz-traildata.patch
-        chromium-90-autofill-memory.patch
-        chromium-90-AXTree-include.patch)
+        chromium-skia-harmony.patch)
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
             '86859c11cfc8ba106a3826479c0bc759324a62150b271dd35d1a0f96e890f52f'
-            'cb26095273bd2b621778c4e29924979bae7c8467ac5dcdb5b14625ff1aa13c2e'
-            'acaf19e245ca8201502d4ff051e54197e2a19d90016a1e5d76426a62f9918513'
-            '6a3034abb32a7cbea07b72779dfe0ca5f8da442b8a34c65dc09d51ed84886c58'
-            'ff17ea19023ff1244c55eb2bbfbcf961d8e484f676261c27c3b283712deeda3b'
-            '2498b2290c6846d7d1a670651a7679d7fd6523090a9b1866476b200566fbb5db')
+            'b3eebecca2a740237cfbdbaacd515549ae91f20845853e5af83bcfd60c80931a'
+            'acaf19e245ca8201502d4ff051e54197e2a19d90016a1e5d76426a62f9918513')
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
 # Keys are the names in the above script; values are the dependencies in Arch
@@ -97,10 +91,6 @@ prepare() {
   
   # Fixes for building with libstdc++ instead of libc++
   patch -Np1 -i ../patches/chromium-89-quiche-private.patch
-  patch -Np1 -i ../patches/chromium-90-time-constexpr.patch
-  patch -Np1 -i ../chromium-90-viz-traildata.patch
-  patch -Np1 -i ../chromium-90-autofill-memory.patch
-  patch -Np1 -i ../chromium-90-AXTree-include.patch
 
   # Force script incompatible with Python 3 to use /usr/bin/python2
   sed -i '1s|python$|&2|' third_party/dom_distiller_js/protoc_plugins/*.py
@@ -148,11 +138,6 @@ prepare() {
   sed -e 's|/etc/chromium|&-canary|' \
       -e "s|'app_name': 'Chromium|&-canary|g" \
       -i components/policy/tools/template_writers/writer_configuration.py
-
-  # If use ccache, set it.
-  if check_buildoption ccache y; then
-    sed '36s|""|'ccache'|g' -i build/toolchain/cc_wrapper.gni
-  fi
 }
 
 build() {
