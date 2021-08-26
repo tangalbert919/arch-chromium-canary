@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=90.0.4415.0
+pkgver=94.0.4606.5
 pkgrel=1
 _launcher_ver=7
 _gcc_patchset=3
@@ -13,13 +13,12 @@ arch=('x86_64')
 url="https://www.chromium.org/Home"
 license=('BSD')
 depends=('gtk3' 'nss' 'alsa-lib' 'xdg-utils' 'libxss' 'libcups' 'libgcrypt'
-         'ttf-liberation' 'systemd' 'dbus' 'libpulse' 'pciutils'
+         'ttf-liberation' 'systemd' 'dbus' 'libpulse' 'pciutils' 'libva'
          'desktop-file-utils' 'hicolor-icon-theme')
-makedepends=('python' 'python2' 'gperf' 'mesa' 'ninja' 'nodejs' 'git' 'libva'
-             'libpipewire02' 'clang' 'lld' 'gn' 'java-runtime-headless'
+makedepends=('python' 'python2' 'gperf' 'ninja' 'nodejs' 'git'
+             'pipewire' 'clang' 'lld' 'gn' 'java-runtime-headless'
              'python2-setuptools')
-optdepends=('libpipewire02: WebRTC desktop sharing under Wayland'
-            'libva: hardware-accelerated video decode [experimental]'
+optdepends=('pipewire: WebRTC desktop sharing under Wayland'
             'kdialog: needed for file dialogs in KDE'
             'org.freedesktop.secrets: password storage backend on GNOME / Xfce'
             'kwallet: for storing passwords in KWallet on KDE desktops')
@@ -27,11 +26,11 @@ install=chromium.install
 source=(https://commondatastorage.googleapis.com/chromium-browser-official/chromium-$pkgver.tar.xz
         chromium-launcher-$_launcher_ver.tar.gz::https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver.tar.gz
         https://github.com/stha09/chromium-patches/releases/download/chromium-${pkgver%%.*}-patchset-$_gcc_patchset/chromium-${pkgver%%.*}-patchset-$_gcc_patchset.tar.xz
-        chromium-skia-harmony.patch)
+        )
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
             '86859c11cfc8ba106a3826479c0bc759324a62150b271dd35d1a0f96e890f52f'
-            'b3eebecca2a740237cfbdbaacd515549ae91f20845853e5af83bcfd60c80931a'
-            'acaf19e245ca8201502d4ff051e54197e2a19d90016a1e5d76426a62f9918513')
+            '22692bddaf2761c6ddf9ff0bc4722972bca4d4c5b2fd3e5dbdac7eb60d914320'
+            )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
 # Keys are the names in the above script; values are the dependencies in Arch
@@ -85,18 +84,15 @@ prepare() {
     third_party/blink/renderer/core/xml/*.cc \
     third_party/blink/renderer/core/xml/parser/xml_document_parser.cc \
     third_party/libxml/chromium/*.cc
-
-  # https://crbug.com/skia/6663#c10
-  patch -Np1 -i ../chromium-skia-harmony.patch
   
   # Fixes for building with libstdc++ instead of libc++
-  patch -Np1 -i ../patches/chromium-89-quiche-private.patch
-
-  # Force script incompatible with Python 3 to use /usr/bin/python2
-  sed -i '1s|python$|&2|' third_party/dom_distiller_js/protoc_plugins/*.py
+  patch -Np1 -i ../patches/chromium-90-ruy-include.patch
+  patch -Np1 -i ../patches/chromium-94-CustomSpaces-include.patch
+  patch -Np1 -i ../patches/chromium-94-compiler.patch
 
   mkdir -p third_party/node/linux/node-linux-x64/bin
   ln -sf /usr/bin/node third_party/node/linux/node-linux-x64/bin/
+  ln -s /usr/bin/java third_party/jdk/current/bin/
 
   # Remove bundled libraries for which we will use the system copies; this
   # *should* do what the remove_bundled_libraries.py script does, with the
@@ -150,12 +146,12 @@ build() {
     export CCACHE_SLOPPINESS=time_macros
   fi
 
-  export CC="${_clang_path}clang"
-  export CXX="${_clang_path}clang++"
-  export AR="${_clang_path}llvm-ar"
-  #export CC=clang
-  #export CXX=clang++
-  #export AR=ar
+  #export CC="${_clang_path}clang"
+  #export CXX="${_clang_path}clang++"
+  #export AR="${_clang_path}llvm-ar"
+  export CC=clang
+  export CXX=clang++
+  export AR=ar
   export NM=nm
 
   local _flags=(
@@ -164,7 +160,6 @@ build() {
     'clang_use_chrome_plugins=false'
     'is_official_build=true' # implies is_cfi=true on x86_64
     'treat_warnings_as_errors=false'
-    'fieldtrial_testing_like_official_build=true'
     'ffmpeg_branding="Chrome"'
     'proprietary_codecs=true'
     'rtc_use_pipewire=true'
@@ -180,6 +175,7 @@ build() {
     "google_default_client_id=\"${_google_default_client_id}\""
     "google_default_client_secret=\"${_google_default_client_secret}\""
     'build_with_tflite_lib=false'
+    'is_cfi=false'
   )
 
   if [[ -n ${_system_libs[icu]+set} ]]; then
@@ -199,7 +195,7 @@ build() {
   CFLAGS+='   -Wno-unknown-warning-option'
   CXXFLAGS+=' -Wno-unknown-warning-option'
 
-  gn gen out/Release --args="${_flags[*]}" --script-executable=/usr/bin/python2
+  gn gen out/Release --args="${_flags[*]}"
   ninja -C out/Release chrome chrome_sandbox chromedriver
 }
 
