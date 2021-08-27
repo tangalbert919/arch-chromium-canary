@@ -26,16 +26,16 @@ install=chromium.install
 source=(https://commondatastorage.googleapis.com/chromium-browser-official/chromium-$pkgver.tar.xz
         chromium-launcher-$_launcher_ver.tar.gz::https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver.tar.gz
         https://github.com/stha09/chromium-patches/releases/download/chromium-${pkgver%%.*}-patchset-$_gcc_patchset/chromium-${pkgver%%.*}-patchset-$_gcc_patchset.tar.xz
-        )
+        chromium-94-sql-assert.patch)
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
             '86859c11cfc8ba106a3826479c0bc759324a62150b271dd35d1a0f96e890f52f'
             '22692bddaf2761c6ddf9ff0bc4722972bca4d4c5b2fd3e5dbdac7eb60d914320'
-            )
+            '5cc09865a4b08d4f56042cc9897ed0dec7320b3e10f2b20ae8f147c0a6cdf953')
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
 # Keys are the names in the above script; values are the dependencies in Arch
 declare -gA _system_libs=(
-  [ffmpeg]=ffmpeg
+  #[ffmpeg]=ffmpeg
   [flac]=flac
   [fontconfig]=fontconfig
   [freetype]=freetype2
@@ -89,6 +89,9 @@ prepare() {
   patch -Np1 -i ../patches/chromium-90-ruy-include.patch
   patch -Np1 -i ../patches/chromium-94-CustomSpaces-include.patch
   patch -Np1 -i ../patches/chromium-94-compiler.patch
+  
+  # Custom fixes
+  patch -Np1 -i ../chromium-94-sql-assert.patch
 
   mkdir -p third_party/node/linux/node-linux-x64/bin
   ln -sf /usr/bin/node third_party/node/linux/node-linux-x64/bin/
@@ -134,6 +137,12 @@ prepare() {
   sed -e 's|/etc/chromium|&-canary|' \
       -e "s|'app_name': 'Chromium|&-canary|g" \
       -i components/policy/tools/template_writers/writer_configuration.py
+
+  # If using bundled ffmpeg, create link to system opus headers. Compiling fails without this.
+  if [[ -y ${_system_libs[ffmpeg]+set} ]]; then
+    rm -fr third_party/opus/src/include
+    ln -sf /usr/include/opus/ third_party/opus/src/include
+  fi
 }
 
 build() {
@@ -184,6 +193,22 @@ build() {
 
   if check_option strip y; then
     _flags+=('symbol_level=0')
+  fi
+
+  # Taken from chromium-dev
+  if [[ -y ${_system_libs[ffmpeg]+set} ]]; then
+    msg2 "Build bundled ffmpeg, compilation fails with system ffmpeg"
+    pushd third_party/ffmpeg &> /dev/null
+    # Disable lto.
+    # NOTE: This avoid messages like:
+    # bfd plugin: LLVM gold plugin has failed to create LTO module: Unknown attribute kind (60) (Producer: 'LLVM9.0.0svn' Reader: 'LLVM 8.0.0')
+    # when you have installed clang in the system.
+    chromium/scripts/build_ffmpeg.py linux x64 --branding Chrome -- \
+      --disable-lto
+
+    chromium/scripts/copy_config.sh
+    chromium/scripts/generate_gn.py
+    popd &> /dev/null
   fi
 
   # Facilitate deterministic builds (taken from build/config/compiler/BUILD.gn)
