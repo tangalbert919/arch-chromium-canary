@@ -139,7 +139,7 @@ prepare() {
       -i components/policy/tools/template_writers/writer_configuration.py
 
   # If using bundled ffmpeg, create link to system opus headers. Compiling fails without this.
-  if [[ -y ${_system_libs[ffmpeg]+set} ]]; then
+  if [[ -z ${_system_libs[ffmpeg]+set} ]]; then
     rm -fr third_party/opus/src/include
     ln -sf /usr/include/opus/ third_party/opus/src/include
   fi
@@ -185,6 +185,7 @@ build() {
     "google_default_client_secret=\"${_google_default_client_secret}\""
     'build_with_tflite_lib=false'
     'is_cfi=false'
+    'use_thin_lto=false'
   )
 
   if [[ -n ${_system_libs[icu]+set} ]]; then
@@ -196,15 +197,11 @@ build() {
   fi
 
   # Taken from chromium-dev
-  if [[ -y ${_system_libs[ffmpeg]+set} ]]; then
+  if [[ -z ${_system_libs[ffmpeg]+set} ]]; then
     msg2 "Build bundled ffmpeg, compilation fails with system ffmpeg"
     pushd third_party/ffmpeg &> /dev/null
-    # Disable lto.
-    # NOTE: This avoid messages like:
-    # bfd plugin: LLVM gold plugin has failed to create LTO module: Unknown attribute kind (60) (Producer: 'LLVM9.0.0svn' Reader: 'LLVM 8.0.0')
-    # when you have installed clang in the system.
     chromium/scripts/build_ffmpeg.py linux x64 --branding Chrome -- \
-      --disable-lto
+      --disable-asm
 
     chromium/scripts/copy_config.sh
     chromium/scripts/generate_gn.py
@@ -235,7 +232,7 @@ package() {
   # Install binaries
   install -D out/Release/chromium-canary "$pkgdir/usr/lib/chromium-canary/chromium-canary"
   install -Dm4755 out/Release/chrome_sandbox "$pkgdir/usr/lib/chromium-canary/chrome-sandbox"
-  install -D out/Release/crashpad_handler "$pkgdir/usr/lib/chromium-canary/crashpad_handler"
+  install -D out/Release/chrome_crashpad_handler "$pkgdir/usr/lib/chromium-canary/chrome_crashpad_handler"
   ln -sf /usr/lib/chromium-canary/chromedriver "$pkgdir/usr/bin/chromedriver-canary"
 
   # Install .desktop and manpages.
