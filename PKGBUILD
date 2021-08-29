@@ -4,10 +4,10 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=94.0.4606.5
+pkgver=95.0.4625.0
 pkgrel=1
 _launcher_ver=7
-_gcc_patchset=3
+_gcc_patchset=1
 pkgdesc="A web browser built for speed, simplicity, and security"
 arch=('x86_64')
 url="https://www.chromium.org/Home"
@@ -26,11 +26,13 @@ install=chromium.install
 source=(https://commondatastorage.googleapis.com/chromium-browser-official/chromium-$pkgver.tar.xz
         chromium-launcher-$_launcher_ver.tar.gz::https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver.tar.gz
         https://github.com/stha09/chromium-patches/releases/download/chromium-${pkgver%%.*}-patchset-$_gcc_patchset/chromium-${pkgver%%.*}-patchset-$_gcc_patchset.tar.xz
-        chromium-94-sql-assert.patch)
+        chromium-94-sql-assert.patch
+        chromium-94-optimization-guide-include.patch)
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
             '86859c11cfc8ba106a3826479c0bc759324a62150b271dd35d1a0f96e890f52f'
-            '22692bddaf2761c6ddf9ff0bc4722972bca4d4c5b2fd3e5dbdac7eb60d914320'
-            '5cc09865a4b08d4f56042cc9897ed0dec7320b3e10f2b20ae8f147c0a6cdf953')
+            '67290c4e0c78bdb3f59e47176492052c79e238bc1fba49b96a35881cf52764c5'
+            '5cc09865a4b08d4f56042cc9897ed0dec7320b3e10f2b20ae8f147c0a6cdf953'
+            '32c955c2a965b2f10142454cc9db211d6801a0a26f819af1309906f47c2657d7')
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
 # Keys are the names in the above script; values are the dependencies in Arch
@@ -86,12 +88,14 @@ prepare() {
     third_party/libxml/chromium/*.cc
   
   # Fixes for building with libstdc++ instead of libc++
-  patch -Np1 -i ../patches/chromium-90-ruy-include.patch
-  patch -Np1 -i ../patches/chromium-94-CustomSpaces-include.patch
   patch -Np1 -i ../patches/chromium-94-compiler.patch
+  patch -Np1 -i ../patches/chromium-95-breadcrumbs-include.patch
+  patch -Np1 -i ../patches/chromium-95-PageDiscarder-const.patch
+  patch -Np1 -i ../patches/chromium-95-ReservationOffsetTable-include.patch
   
   # Custom fixes
   patch -Np1 -i ../chromium-94-sql-assert.patch
+  patch -Np1 -i ../chromium-94-optimization-guide-include.patch
 
   mkdir -p third_party/node/linux/node-linux-x64/bin
   ln -sf /usr/bin/node third_party/node/linux/node-linux-x64/bin/
