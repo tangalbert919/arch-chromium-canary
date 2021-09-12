@@ -4,10 +4,10 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=95.0.4625.0
+pkgver=95.0.4636.4
 pkgrel=1
 _launcher_ver=7
-_gcc_patchset=1
+_gcc_patchset=2
 pkgdesc="A web browser built for speed, simplicity, and security"
 arch=('x86_64')
 url="https://www.chromium.org/Home"
@@ -30,7 +30,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         chromium-94-optimization-guide-include.patch)
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
             '86859c11cfc8ba106a3826479c0bc759324a62150b271dd35d1a0f96e890f52f'
-            '67290c4e0c78bdb3f59e47176492052c79e238bc1fba49b96a35881cf52764c5'
+            '5796f54f53794dd859da43c60db97f76a941be334bc7365b9058582e192bda52'
             '5cc09865a4b08d4f56042cc9897ed0dec7320b3e10f2b20ae8f147c0a6cdf953'
             '32c955c2a965b2f10142454cc9db211d6801a0a26f819af1309906f47c2657d7')
 
@@ -40,7 +40,7 @@ declare -gA _system_libs=(
   #[ffmpeg]=ffmpeg
   [flac]=flac
   [fontconfig]=fontconfig
-  [freetype]=freetype2
+  #[freetype]=freetype2
   [harfbuzz-ng]=harfbuzz
   [icu]=icu
   [libdrm]=
@@ -89,10 +89,7 @@ prepare() {
   
   # Fixes for building with libstdc++ instead of libc++
   patch -Np1 -i ../patches/chromium-94-compiler.patch
-  patch -Np1 -i ../patches/chromium-95-breadcrumbs-include.patch
-  patch -Np1 -i ../patches/chromium-95-PageDiscarder-const.patch
-  patch -Np1 -i ../patches/chromium-95-ReservationOffsetTable-include.patch
-  
+
   # Custom fixes
   patch -Np1 -i ../chromium-94-sql-assert.patch
   patch -Np1 -i ../chromium-94-optimization-guide-include.patch
@@ -118,7 +115,7 @@ prepare() {
     --system-libraries "${!_system_libs[@]}"
 
   # Download prebuilt clang from Google, as system clang does not work here.
-  tools/clang/scripts/update.py
+  #tools/clang/scripts/update.py
 
   # Use chromium-canary as brand name. Modified from chromium-dev PKGBUILD in the AUR.
   sed -e 's|=Chromium|&-canary|g' \
