@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=95.0.4636.4
+pkgver=96.0.4664.3
 pkgrel=1
 _launcher_ver=7
 _gcc_patchset=2
@@ -23,24 +23,32 @@ optdepends=('pipewire: WebRTC desktop sharing under Wayland'
             'org.freedesktop.secrets: password storage backend on GNOME / Xfce'
             'kwallet: for storing passwords in KWallet on KDE desktops')
 install=chromium.install
+
 source=(https://commondatastorage.googleapis.com/chromium-browser-official/chromium-$pkgver.tar.xz
         chromium-launcher-$_launcher_ver.tar.gz::https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver.tar.gz
+        # Patchset
         https://github.com/stha09/chromium-patches/releases/download/chromium-${pkgver%%.*}-patchset-$_gcc_patchset/chromium-${pkgver%%.*}-patchset-$_gcc_patchset.tar.xz
-        chromium-94-sql-assert.patch
-        chromium-94-optimization-guide-include.patch)
+        # Custom patches (might be from upstream)
+        sql-make-VirtualCursor-standard-layout-type.patch
+        chromium-93-ffmpeg-4.4.patch
+        )
+
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
             '86859c11cfc8ba106a3826479c0bc759324a62150b271dd35d1a0f96e890f52f'
-            '5796f54f53794dd859da43c60db97f76a941be334bc7365b9058582e192bda52'
-            '5cc09865a4b08d4f56042cc9897ed0dec7320b3e10f2b20ae8f147c0a6cdf953'
-            '32c955c2a965b2f10142454cc9db211d6801a0a26f819af1309906f47c2657d7')
+            # Hash for patchset
+            'ba26b864f599bc05c6a276f3e8a865bf34115c9668d163f0d911315b7bb6e579'
+            # Hash(es) for custom patches
+            'c81a6b53d48d44188f8dbb9c6cd644657fec102df862c05f3bfdaed9e4c39dba'
+            '1a9e074f417f8ffd78bcd6874d8e2e74a239905bf662f76a7755fa40dc476b57'
+            )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
 # Keys are the names in the above script; values are the dependencies in Arch
 declare -gA _system_libs=(
-  #[ffmpeg]=ffmpeg
+  [ffmpeg]=ffmpeg
   [flac]=flac
   [fontconfig]=fontconfig
-  #[freetype]=freetype2
+  [freetype]=freetype2
   [harfbuzz-ng]=harfbuzz
   [icu]=icu
   [libdrm]=
@@ -88,11 +96,12 @@ prepare() {
     third_party/libxml/chromium/*.cc
   
   # Fixes for building with libstdc++ instead of libc++
-  patch -Np1 -i ../patches/chromium-94-compiler.patch
+  patch -Np1 -i ../patches/chromium-95-compiler.patch
+  patch -Np1 -i ../patches/chromium-96-AppliedTextDecoration-include.patch
 
-  # Custom fixes
-  patch -Np1 -i ../chromium-94-sql-assert.patch
-  patch -Np1 -i ../chromium-94-optimization-guide-include.patch
+  # Upstream fixes
+  patch -Np1 -i ../sql-make-VirtualCursor-standard-layout-type.patch
+  patch -Np1 -i ../chromium-93-ffmpeg-4.4.patch
 
   mkdir -p third_party/node/linux/node-linux-x64/bin
   ln -sf /usr/bin/node third_party/node/linux/node-linux-x64/bin/
@@ -111,7 +120,7 @@ prepare() {
       -delete
   done
 
-  python2 build/linux/unbundle/replace_gn_files.py \
+  python build/linux/unbundle/replace_gn_files.py \
     --system-libraries "${!_system_libs[@]}"
 
   # Download prebuilt clang from Google, as system clang does not work here.
@@ -184,7 +193,7 @@ build() {
     "google_api_key=\"${_google_api_key}\""
     "google_default_client_id=\"${_google_default_client_id}\""
     "google_default_client_secret=\"${_google_default_client_secret}\""
-    'build_with_tflite_lib=false'
+#    'build_with_tflite_lib=false'
     'is_cfi=false'
     'use_thin_lto=false'
   )
