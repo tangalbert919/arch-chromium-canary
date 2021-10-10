@@ -7,7 +7,7 @@ pkgname=chromium-canary
 pkgver=96.0.4664.3
 pkgrel=1
 _launcher_ver=7
-_gcc_patchset=2
+_gcc_patchset=3
 pkgdesc="A web browser built for speed, simplicity, and security"
 arch=('x86_64')
 url="https://www.chromium.org/Home"
@@ -36,7 +36,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
             '86859c11cfc8ba106a3826479c0bc759324a62150b271dd35d1a0f96e890f52f'
             # Hash for patchset
-            'ba26b864f599bc05c6a276f3e8a865bf34115c9668d163f0d911315b7bb6e579'
+            'b2b8466b5f7712ca25f35ee5ee4542940179e73252bbce007566c6964f7106fd'
             # Hash(es) for custom patches
             'c81a6b53d48d44188f8dbb9c6cd644657fec102df862c05f3bfdaed9e4c39dba'
             '1a9e074f417f8ffd78bcd6874d8e2e74a239905bf662f76a7755fa40dc476b57'
@@ -72,8 +72,6 @@ depends+=(${_system_libs[@]})
 # Note: These are for Arch Linux use ONLY. For your own distribution, please
 # get your own set of keys.
 _google_api_key=apikey
-_google_default_client_id=noid
-_google_default_client_secret=nosecret
 
 # Taken from chromium-dev PKGBUILD
 if [ ! -f "${BUILDDIR}/PKGBUILD" ]; then
@@ -96,8 +94,8 @@ prepare() {
     third_party/libxml/chromium/*.cc
   
   # Fixes for building with libstdc++ instead of libc++
-  patch -Np1 -i ../patches/chromium-95-compiler.patch
-  patch -Np1 -i ../patches/chromium-96-AppliedTextDecoration-include.patch
+  patch -Np1 -i ../patches/chromium-96-compiler.patch
+  patch -Np1 -i ../patches/chromium-96-CouponDB-include.patch
 
   # Upstream fixes
   patch -Np1 -i ../sql-make-VirtualCursor-standard-layout-type.patch
@@ -179,6 +177,8 @@ build() {
     'clang_use_chrome_plugins=false'
     'is_official_build=true' # implies is_cfi=true on x86_64
     'treat_warnings_as_errors=false'
+    'disable_fieldtrial_testing_config=true'
+    'blink_enable_generated_code_formatting=false'
     'ffmpeg_branding="Chrome"'
     'proprietary_codecs=true'
     'rtc_use_pipewire=true'
@@ -191,11 +191,7 @@ build() {
     'use_vaapi=true'
     'enable_nacl=false'
     "google_api_key=\"${_google_api_key}\""
-    "google_default_client_id=\"${_google_default_client_id}\""
-    "google_default_client_secret=\"${_google_default_client_secret}\""
-#    'build_with_tflite_lib=false'
     'is_cfi=false'
-    'use_thin_lto=false'
   )
 
   if [[ -n ${_system_libs[icu]+set} ]]; then
