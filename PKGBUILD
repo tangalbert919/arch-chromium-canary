@@ -201,6 +201,11 @@ build() {
     'enable_nacl=false'
     "google_api_key=\"${_google_api_key}\""
     'is_cfi=false'
+    'use_ozone=true'
+    'ozone_auto_platforms=false'
+    'ozone_platform_headless=true'
+    'ozone_platform_x11=true'
+    "ozone_platform=\"x11\""
   )
 
   if [[ -n ${_system_libs[icu]+set} ]]; then
