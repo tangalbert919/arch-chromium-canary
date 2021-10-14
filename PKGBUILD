@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=96.0.4664.3
+pkgver=97.0.4668.0
 pkgrel=1
 _launcher_ver=8
 _gcc_patchset=3
@@ -27,13 +27,13 @@ install=chromium.install
 source=(https://commondatastorage.googleapis.com/chromium-browser-official/chromium-$pkgver.tar.xz
         chromium-launcher-$_launcher_ver.tar.gz::https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver.tar.gz
         # Patchset
-        https://github.com/stha09/chromium-patches/releases/download/chromium-${pkgver%%.*}-patchset-$_gcc_patchset/chromium-${pkgver%%.*}-patchset-$_gcc_patchset.tar.xz
+        #https://github.com/stha09/chromium-patches/releases/download/chromium-${pkgver%%.*}-patchset-$_gcc_patchset/chromium-${pkgver%%.*}-patchset-$_gcc_patchset.tar.xz
+        https://github.com/stha09/chromium-patches/releases/download/chromium-96-patchset-$_gcc_patchset/chromium-96-patchset-$_gcc_patchset.tar.xz
         # Custom patches (might be from upstream)
         sql-make-VirtualCursor-standard-layout-type.patch
         chromium-93-ffmpeg-4.4.patch
-        chromium-96-CookieManager.patch
-        chromium-96-base-memory.patch
         chromium-94-ffmpeg-roll.patch
+        chromium-97-memcpy.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -43,9 +43,8 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             # Hash(es) for custom patches
             'c81a6b53d48d44188f8dbb9c6cd644657fec102df862c05f3bfdaed9e4c39dba'
             '1a9e074f417f8ffd78bcd6874d8e2e74a239905bf662f76a7755fa40dc476b57'
-            'f2a09892e4c505a00c2bc777d3a5d1112c924f6a583e7b2b6ed783c5bcab673c'
-            'abcf0f4e634fbd77cfa9040ce23de1231d3a5bd18620723735fe8ac1374f242e'
             '56acb6e743d2ab1ed9f3eb01700ade02521769978d03ac43226dec94659b3ace'
+            '37ac4b9467ca8a08a9a4f24f42375d4f48083fb0bd2ce069a9f8c7b1becc9b94'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -101,14 +100,12 @@ prepare() {
   
   # Fixes for building with libstdc++ instead of libc++
   patch -Np1 -i ../patches/chromium-96-compiler.patch
-  patch -Np1 -i ../patches/chromium-96-CouponDB-include.patch
 
   # Upstream or custom fixes
   patch -Np1 -i ../sql-make-VirtualCursor-standard-layout-type.patch
   patch -Np1 -i ../chromium-93-ffmpeg-4.4.patch
-  patch -Np1 -i ../chromium-96-CookieManager.patch
-  patch -Np1 -i ../chromium-96-base-memory.patch
   patch -Rp1 -i ../chromium-94-ffmpeg-roll.patch
+  patch -Np1 -i ../chromium-97-memcpy.patch
 
   mkdir -p third_party/node/linux/node-linux-x64/bin
   ln -sf /usr/bin/node third_party/node/linux/node-linux-x64/bin/

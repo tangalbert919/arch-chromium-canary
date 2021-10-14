@@ -1,2 +1,1 @@
-../sql-make-VirtualCursor-standard-layout-type.patch
-../chromium-96-base-memory.patch
+../chromium-97-memcpy.patch

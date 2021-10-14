@@ -1,0 +1,10 @@
+--- a/components/web_package/web_bundle_builder.cc
++++ b/components/web_package/web_bundle_builder.cc
+@@ -5,6 +5,7 @@
+ #include "components/web_package/web_bundle_builder.h"
+ 
+ #include <ostream>
++#include <cstring>
+ 
+ #include "base/big_endian.h"
+ 
