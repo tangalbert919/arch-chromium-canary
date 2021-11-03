@@ -4,10 +4,10 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=97.0.4684.2
+pkgver=97.0.4689.0
 pkgrel=1
 _launcher_ver=8
-_gcc_patchset=1
+_gcc_patchset=2
 pkgdesc="A web browser built for speed, simplicity, and security"
 arch=('x86_64')
 url="https://www.chromium.org/Home"
@@ -38,7 +38,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
             '213e50f48b67feb4441078d50b0fd431df34323be15be97c55302d3fdac4483a'
             # Hash for patchset
-            '0c05fbd1b141d3682340c07264a9d9efa57b0fd1616409689c7931f8fef59e70'
+            '0b84daf83ce4aef8401c6a4b94e494fa497515c02202c570f6bc42ccc374af78'
             # Hash(es) for custom patches
             'c81a6b53d48d44188f8dbb9c6cd644657fec102df862c05f3bfdaed9e4c39dba'
             '1a9e074f417f8ffd78bcd6874d8e2e74a239905bf662f76a7755fa40dc476b57'
@@ -59,13 +59,22 @@ declare -gA _system_libs=(
   [libpng]=libpng
   #[libvpx]=libvpx
   [libwebp]=libwebp
-  [libxml]=libxml2
-  [libxslt]=libxslt
   [opus]=opus
-  [re2]=re2
   [snappy]=snappy
   [zlib]=minizip
 )
+
+# Unbundle only without libc++, as libc++ is not fully ABI compatible with libstdc++
+if [[ ${FORCE_LIBCXX} != yes ]]; then
+  _system_libs+=(
+    [libxml]=libxml2
+    [libxslt]=libxslt
+    [re2]=re2
+  )
+else
+  depends+=('libc++')
+fi
+
 _unwanted_bundled_libs=(
   $(printf "%s\n" ${!_system_libs[@]} | sed 's/^libjpeg$/&_turbo/')
 )
@@ -95,9 +104,9 @@ prepare() {
     third_party/blink/renderer/core/xml/*.cc \
     third_party/blink/renderer/core/xml/parser/xml_document_parser.cc \
     third_party/libxml/chromium/*.cc
-  
+
   # Fixes for building with libstdc++ instead of libc++
-  patch -Np1 -i ../patches/chromium-96-compiler.patch
+  #patch -Np1 -i ../patches/chromium-96-compiler.patch
 
   # Upstream or custom fixes
   patch -Np1 -i ../sql-make-VirtualCursor-standard-layout-type.patch
@@ -166,12 +175,12 @@ build() {
     export CCACHE_SLOPPINESS=time_macros
   fi
 
-  #export CC="${_clang_path}clang"
-  #export CXX="${_clang_path}clang++"
-  #export AR="${_clang_path}llvm-ar"
-  export CC=clang
-  export CXX=clang++
-  export AR=ar
+  export CC="${_clang_path}clang"
+  export CXX="${_clang_path}clang++"
+  export AR="${_clang_path}llvm-ar"
+  #export CC=clang
+  #export CXX=clang++
+  #export AR=ar
   export NM=nm
 
   local _flags=(
@@ -230,6 +239,12 @@ build() {
   # Do not warn about unknown warning options
   CFLAGS+='   -Wno-unknown-warning-option'
   CXXFLAGS+=' -Wno-unknown-warning-option'
+
+  # Use libc++ if libstdc++ does not work.
+  if [[ ${FORCE_LIBCXX} == yes ]]; then
+    CXXFLAGS+=' -stdlib=libc++'
+    LDFLAGS+='  -stdlib=libc++'
+  fi
 
   # Get rid of the "-fexceptions" flag.
   CFLAGS="${CFLAGS/-fexceptions/}"
