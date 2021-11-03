@@ -8,6 +8,10 @@ Run this command to install missing dependencies before building, and then the b
 
 `makepkg -si`
 
+To use libc++ instead of libstdc++ (provided by GCC), run this command:
+
+`FORCE_LIBCXX=yes makepkg -si`
+
 ## Credits:
 
 * The PKGBUILD used is the modified version of this [PKGBUILD](https://git.archlinux.org/svntogit/packages.git/tree/trunk/PKGBUILD?h=packages/chromium) for the stable version of Chromium on Arch Linux.
