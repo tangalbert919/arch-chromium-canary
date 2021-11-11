@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=97.0.4689.0
+pkgver=97.0.4692.8
 pkgrel=1
 _launcher_ver=8
 _gcc_patchset=2
@@ -71,8 +71,6 @@ if [[ ${FORCE_LIBCXX} != yes ]]; then
     [libxslt]=libxslt
     [re2]=re2
   )
-else
-  depends+=('libc++')
 fi
 
 _unwanted_bundled_libs=(
@@ -133,7 +131,8 @@ prepare() {
   python build/linux/unbundle/replace_gn_files.py \
     --system-libraries "${!_system_libs[@]}"
 
-  # Download prebuilt clang from Google, as system clang does not work here.
+  # Download Google's prebuilt Clang if needed.
+  # TODO: Add flag for this.
   tools/clang/scripts/update.py
 
   # Use chromium-canary as brand name. Modified from chromium-dev PKGBUILD in the AUR.
@@ -175,6 +174,7 @@ build() {
     export CCACHE_SLOPPINESS=time_macros
   fi
 
+  # Switch between Google's Clang and system Clang.
   export CC="${_clang_path}clang"
   export CXX="${_clang_path}clang++"
   export AR="${_clang_path}llvm-ar"
@@ -197,7 +197,6 @@ build() {
     'link_pulseaudio=true'
     'use_gnome_keyring=false'
     'use_sysroot=false'
-    'use_custom_libcxx=false'
     'enable_hangout_services_extension=true'
     'enable_widevine=true'
     'use_vaapi=true'
@@ -217,6 +216,13 @@ build() {
 
   if check_option strip y; then
     _flags+=('symbol_level=0')
+  fi
+
+  # Clang 13 is still not in the Arch Linux repos.
+  if [[ ${FORCE_LIBCXX} == yes ]]; then
+    _flags+=('use_custom_libcxx=true')
+  else
+    _flags+=('use_custom_libcxx=false')
   fi
 
   # Taken from chromium-dev
@@ -241,10 +247,10 @@ build() {
   CXXFLAGS+=' -Wno-unknown-warning-option'
 
   # Use libc++ if libstdc++ does not work.
-  if [[ ${FORCE_LIBCXX} == yes ]]; then
-    CXXFLAGS+=' -stdlib=libc++'
-    LDFLAGS+='  -stdlib=libc++'
-  fi
+  #if [[ ${FORCE_LIBCXX} == yes ]]; then
+    #CXXFLAGS+=' -stdlib=libc++'
+    #LDFLAGS+='  -stdlib=libc++'
+  #fi
 
   # Get rid of the "-fexceptions" flag.
   CFLAGS="${CFLAGS/-fexceptions/}"
