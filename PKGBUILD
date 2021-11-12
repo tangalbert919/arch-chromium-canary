@@ -48,7 +48,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
 # Keys are the names in the above script; values are the dependencies in Arch
 declare -gA _system_libs=(
-  [ffmpeg]=ffmpeg
+  #[ffmpeg]=ffmpeg
   [flac]=flac
   [fontconfig]=fontconfig
   [freetype]=freetype2
@@ -108,8 +108,8 @@ prepare() {
 
   # Upstream or custom fixes
   patch -Np1 -i ../sql-make-VirtualCursor-standard-layout-type.patch
-  patch -Np1 -i ../chromium-93-ffmpeg-4.4.patch
-  patch -Rp1 -i ../chromium-94-ffmpeg-roll.patch
+  #patch -Np1 -i ../chromium-93-ffmpeg-4.4.patch
+  #patch -Rp1 -i ../chromium-94-ffmpeg-roll.patch
 
   mkdir -p third_party/node/linux/node-linux-x64/bin
   ln -sf /usr/bin/node third_party/node/linux/node-linux-x64/bin/
