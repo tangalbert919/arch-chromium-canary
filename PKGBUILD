@@ -107,7 +107,7 @@ prepare() {
 
   # Only apply this patch if Google Clang is not used.
   if [[ ${GOOGLE_CLANG} != yes ]]; then
-    patch -Np1 -i ../patches/chromium-97-compiler.patch
+    patch -Np1 -i ../chromium-98-compiler.patch
   fi
 
   # Upstream or custom fixes
