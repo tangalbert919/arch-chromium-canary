@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=97.0.4692.8
+pkgver=98.0.4706.0
 pkgrel=1
 _launcher_ver=8
 _gcc_patchset=4
@@ -27,8 +27,8 @@ install=chromium.install
 source=(https://commondatastorage.googleapis.com/chromium-browser-official/chromium-$pkgver.tar.xz
         chromium-launcher-$_launcher_ver.tar.gz::https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver.tar.gz
         # Patchset
-        https://github.com/stha09/chromium-patches/releases/download/chromium-${pkgver%%.*}-patchset-$_gcc_patchset/chromium-${pkgver%%.*}-patchset-$_gcc_patchset.tar.xz
-        #https://github.com/stha09/chromium-patches/releases/download/chromium-96-patchset-$_gcc_patchset/chromium-96-patchset-$_gcc_patchset.tar.xz
+        #https://github.com/stha09/chromium-patches/releases/download/chromium-${pkgver%%.*}-patchset-$_gcc_patchset/chromium-${pkgver%%.*}-patchset-$_gcc_patchset.tar.xz
+        https://github.com/stha09/chromium-patches/releases/download/chromium-97-patchset-$_gcc_patchset/chromium-97-patchset-$_gcc_patchset.tar.xz
         # Custom patches (might be from upstream)
         sql-make-VirtualCursor-standard-layout-type.patch
         chromium-93-ffmpeg-4.4.patch
@@ -71,8 +71,8 @@ if [[ ${FORCE_LIBCXX} != yes ]]; then
     [libxslt]=libxslt
     [re2]=re2
   )
-#else
-#  depends+='libc++'
+else
+  depends+=('libc++')
 fi
 
 _unwanted_bundled_libs=(
@@ -105,13 +105,13 @@ prepare() {
     third_party/blink/renderer/core/xml/parser/xml_document_parser.cc \
     third_party/libxml/chromium/*.cc
 
-  # Fixes for building with libstdc++ instead of libc++
-  if [[ ${FORCE_LIBCXX} != yes ]]; then
-    patch -Np1 -i ../patches/chromium-96-compiler.patch
+  # Only apply this patch if Google Clang is not used.
+  if [[ ${GOOGLE_CLANG} != yes ]]; then
+    patch -Np1 -i ../patches/chromium-97-compiler.patch
   fi
 
   # Upstream or custom fixes
-  patch -Np1 -i ../sql-make-VirtualCursor-standard-layout-type.patch
+  #patch -Np1 -i ../sql-make-VirtualCursor-standard-layout-type.patch
   #patch -Np1 -i ../chromium-93-ffmpeg-4.4.patch
   #patch -Rp1 -i ../chromium-94-ffmpeg-roll.patch
 
@@ -136,7 +136,6 @@ prepare() {
     --system-libraries "${!_system_libs[@]}"
 
   # Download Google's prebuilt Clang if needed.
-  # TODO: Add flag for this.
   if [[ ${GOOGLE_CLANG} == yes ]]; then
     tools/clang/scripts/update.py
   fi
@@ -181,7 +180,7 @@ build() {
   fi
 
   # Switch between Google's Clang and system Clang.
-  if [[ ${GOOGLE_CLANG} == yes ]] then
+  if [[ ${GOOGLE_CLANG} == yes ]]; then
     export CC="${_clang_path}clang"
     export CXX="${_clang_path}clang++"
     export AR="${_clang_path}llvm-ar"
@@ -217,6 +216,7 @@ build() {
     'ozone_platform_headless=true'
     'ozone_platform_x11=true'
     "ozone_platform=\"x11\""
+    'use_custom_libcxx=false'
   )
 
   if [[ -n ${_system_libs[icu]+set} ]]; then
@@ -228,11 +228,11 @@ build() {
   fi
 
   # Clang 13 is still not in the Arch Linux repos.
-  if [[ ${FORCE_LIBCXX} == yes ]]; then
-    _flags+=('use_custom_libcxx=true')
-  else
-    _flags+=('use_custom_libcxx=false')
-  fi
+  #if [[ ${FORCE_LIBCXX} == yes ]]; then
+  #  _flags+=('use_custom_libcxx=true')
+  #else
+  #  _flags+=('use_custom_libcxx=false')
+  #fi
 
   # Taken from chromium-dev
   if [[ -z ${_system_libs[ffmpeg]+set} ]]; then
@@ -256,10 +256,10 @@ build() {
   CXXFLAGS+=' -Wno-unknown-warning-option'
 
   # Use libc++ if libstdc++ does not work.
-  #if [[ ${FORCE_LIBCXX} == yes ]]; then
-    #CXXFLAGS+=' -stdlib=libc++'
-    #LDFLAGS+='  -stdlib=libc++'
-  #fi
+  if [[ ${FORCE_LIBCXX} == yes ]]; then
+    CXXFLAGS+=' -stdlib=libc++'
+    LDFLAGS+='  -stdlib=libc++'
+  fi
 
   # Get rid of the "-fexceptions" flag.
   CFLAGS="${CFLAGS/-fexceptions/}"
