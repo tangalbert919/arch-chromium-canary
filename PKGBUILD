@@ -7,7 +7,7 @@ pkgname=chromium-canary
 pkgver=97.0.4692.8
 pkgrel=1
 _launcher_ver=8
-_gcc_patchset=2
+_gcc_patchset=4
 pkgdesc="A web browser built for speed, simplicity, and security"
 arch=('x86_64')
 url="https://www.chromium.org/Home"
@@ -38,7 +38,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
             '213e50f48b67feb4441078d50b0fd431df34323be15be97c55302d3fdac4483a'
             # Hash for patchset
-            '0b84daf83ce4aef8401c6a4b94e494fa497515c02202c570f6bc42ccc374af78'
+            '7af5c0a55a20c0fb496b2f4448d89203a83bb1914754d864460e55e68731ef0b'
             # Hash(es) for custom patches
             'c81a6b53d48d44188f8dbb9c6cd644657fec102df862c05f3bfdaed9e4c39dba'
             '1a9e074f417f8ffd78bcd6874d8e2e74a239905bf662f76a7755fa40dc476b57'
@@ -71,6 +71,8 @@ if [[ ${FORCE_LIBCXX} != yes ]]; then
     [libxslt]=libxslt
     [re2]=re2
   )
+#else
+#  depends+='libc++'
 fi
 
 _unwanted_bundled_libs=(
@@ -104,7 +106,9 @@ prepare() {
     third_party/libxml/chromium/*.cc
 
   # Fixes for building with libstdc++ instead of libc++
-  #patch -Np1 -i ../patches/chromium-96-compiler.patch
+  if [[ ${FORCE_LIBCXX} != yes ]]; then
+    patch -Np1 -i ../patches/chromium-96-compiler.patch
+  fi
 
   # Upstream or custom fixes
   patch -Np1 -i ../sql-make-VirtualCursor-standard-layout-type.patch
@@ -133,7 +137,9 @@ prepare() {
 
   # Download Google's prebuilt Clang if needed.
   # TODO: Add flag for this.
-  tools/clang/scripts/update.py
+  if [[ ${GOOGLE_CLANG} == yes ]]; then
+    tools/clang/scripts/update.py
+  fi
 
   # Use chromium-canary as brand name. Modified from chromium-dev PKGBUILD in the AUR.
   sed -e 's|=Chromium|&-canary|g' \
@@ -175,12 +181,15 @@ build() {
   fi
 
   # Switch between Google's Clang and system Clang.
-  export CC="${_clang_path}clang"
-  export CXX="${_clang_path}clang++"
-  export AR="${_clang_path}llvm-ar"
-  #export CC=clang
-  #export CXX=clang++
-  #export AR=ar
+  if [[ ${GOOGLE_CLANG} == yes ]] then
+    export CC="${_clang_path}clang"
+    export CXX="${_clang_path}clang++"
+    export AR="${_clang_path}llvm-ar"
+  else
+    export CC=clang
+    export CXX=clang++
+    export AR=ar
+  fi
   export NM=nm
 
   local _flags=(

@@ -12,6 +12,12 @@ To use libc++ instead of libstdc++ (provided by GCC), run this command:
 
 `FORCE_LIBCXX=yes makepkg -si`
 
+To use Google's Clang instead of system Clang, run this command:
+
+`GOOGLE_CLANG=yes makepkg -si`
+
+`FORCE_LIBCXX=yes` and `GOOGLE_CLANG=yes` can both be passed before `makepkg`.
+
 ## Credits:
 
 * The PKGBUILD used is the modified version of this [PKGBUILD](https://git.archlinux.org/svntogit/packages.git/tree/trunk/PKGBUILD?h=packages/chromium) for the stable version of Chromium on Arch Linux.
