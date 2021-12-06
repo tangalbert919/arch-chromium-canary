@@ -44,7 +44,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             'c81a6b53d48d44188f8dbb9c6cd644657fec102df862c05f3bfdaed9e4c39dba'
             '1a9e074f417f8ffd78bcd6874d8e2e74a239905bf662f76a7755fa40dc476b57'
             '56acb6e743d2ab1ed9f3eb01700ade02521769978d03ac43226dec94659b3ace'
-            '8e4ef1a318a332e7876f472314fb3074fb99cfd9bfa3e00e979d65a300c7c074'
+            '51a6da22adf4bb67ed9e8ac1b1936e9eadbcde1f4cdfa53b5b463f5f2f3eac22'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -109,7 +109,7 @@ prepare() {
 
   # Only apply this patch if Google Clang is not used.
   if [[ ${GOOGLE_CLANG} != yes ]]; then
-    patch -Np1 -i ../patches/chromium-98-compiler.patch
+    patch -Np1 -i ../chromium-98-compiler.patch
   fi
 
   # Upstream or custom fixes
