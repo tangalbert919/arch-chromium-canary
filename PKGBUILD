@@ -62,7 +62,6 @@ declare -gA _system_libs=(
   #[libvpx]=libvpx
   [libwebp]=libwebp
   [opus]=opus
-  [snappy]=snappy
   [zlib]=minizip
 )
 
@@ -72,6 +71,7 @@ if [[ ${FORCE_LIBCXX} != yes ]]; then
     [libxml]=libxml2
     [libxslt]=libxslt
     [re2]=re2
+    [snappy]=snappy
   )
 else
   depends+=('libc++')
