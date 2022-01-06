@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=99.0.4799.0
+pkgver=99.0.4810.0
 pkgrel=1
 _launcher_ver=8
 _gcc_patchset=4
