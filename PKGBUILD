@@ -4,10 +4,10 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=99.0.4816.0
+pkgver=101.0.4920.0
 pkgrel=1
 _launcher_ver=8
-_gcc_patchset=4
+_gcc_patchset=1
 pkgdesc="A web browser built for speed, simplicity, and security"
 arch=('x86_64')
 url="https://www.chromium.org/Home"
@@ -27,40 +27,36 @@ install=chromium.install
 source=(https://commondatastorage.googleapis.com/chromium-browser-official/chromium-$pkgver.tar.xz
         chromium-launcher-$_launcher_ver.tar.gz::https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver.tar.gz
         # Patchset
-        #https://github.com/stha09/chromium-patches/releases/download/chromium-${pkgver%%.*}-patchset-$_gcc_patchset/chromium-${pkgver%%.*}-patchset-$_gcc_patchset.tar.xz
-        https://github.com/stha09/chromium-patches/releases/download/chromium-98-patchset-$_gcc_patchset/chromium-98-patchset-$_gcc_patchset.tar.xz
+        https://github.com/stha09/chromium-patches/releases/download/chromium-${pkgver%%.*}-patchset-$_gcc_patchset/chromium-${pkgver%%.*}-patchset-$_gcc_patchset.tar.xz
+        #https://github.com/stha09/chromium-patches/releases/download/chromium-98-patchset-$_gcc_patchset/chromium-100-patchset-$_gcc_patchset.tar.xz
         # Custom patches (might be from upstream)
         sql-make-VirtualCursor-standard-layout-type.patch
-        chromium-93-ffmpeg-4.4.patch
-        chromium-94-ffmpeg-roll.patch
-        chromium-98-compiler.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
             '213e50f48b67feb4441078d50b0fd431df34323be15be97c55302d3fdac4483a'
             # Hash for patchset
-            '2223d8bd4b730ae55bda8ccd60ee29f3a07b7f4dad9bdc86e48bdc641d930976'
+            '48700ddb7b6d90ff76ff386063e250baf7bced8a2c3242bfcc62b526c098f557'
             # Hash(es) for custom patches
             'c81a6b53d48d44188f8dbb9c6cd644657fec102df862c05f3bfdaed9e4c39dba'
-            '1a9e074f417f8ffd78bcd6874d8e2e74a239905bf662f76a7755fa40dc476b57'
-            '56acb6e743d2ab1ed9f3eb01700ade02521769978d03ac43226dec94659b3ace'
-            '51a6da22adf4bb67ed9e8ac1b1936e9eadbcde1f4cdfa53b5b463f5f2f3eac22'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
 # Keys are the names in the above script; values are the dependencies in Arch
 declare -gA _system_libs=(
-  #[ffmpeg]=ffmpeg
+  [ffmpeg]=ffmpeg
   [flac]=flac
   [fontconfig]=fontconfig
   [freetype]=freetype2
   [harfbuzz-ng]=harfbuzz
   [icu]=icu
-  #[libdrm]=
+  [libdrm]=
   [libjpeg]=libjpeg
   [libpng]=libpng
   #[libvpx]=libvpx
   [libwebp]=libwebp
+  [libxml]=libxml2
+  [libxslt]=libxslt
   [opus]=opus
   [zlib]=minizip
 )
@@ -68,8 +64,6 @@ declare -gA _system_libs=(
 # Unbundle only without libc++, as libc++ is not fully ABI compatible with libstdc++
 if [[ ${FORCE_LIBCXX} != yes ]]; then
   _system_libs+=(
-    [libxml]=libxml2
-    [libxslt]=libxslt
     [re2]=re2
     [snappy]=snappy
   )
@@ -109,13 +103,9 @@ prepare() {
 
   # Only apply this patch if Google Clang is not used.
   if [[ ${GOOGLE_CLANG} != yes ]]; then
-    patch -Np1 -i ../chromium-98-compiler.patch
+    # Upstream or custom patches
+    patch -Np1 -i ../sql-make-VirtualCursor-standard-layout-type.patch
   fi
-
-  # Upstream or custom fixes
-  #patch -Np1 -i ../sql-make-VirtualCursor-standard-layout-type.patch
-  #patch -Np1 -i ../chromium-93-ffmpeg-4.4.patch
-  #patch -Rp1 -i ../chromium-94-ffmpeg-roll.patch
 
   mkdir -p third_party/node/linux/node-linux-x64/bin
   ln -sf /usr/bin/node third_party/node/linux/node-linux-x64/bin/
@@ -217,8 +207,7 @@ build() {
     'ozone_auto_platforms=false'
     'ozone_platform_headless=true'
     'ozone_platform_x11=true'
-    "ozone_platform=\"x11\""
-    'use_custom_libcxx=false'
+    'ozone_platform="x11"'
   )
 
   if [[ -n ${_system_libs[icu]+set} ]]; then
@@ -229,12 +218,11 @@ build() {
     _flags+=('symbol_level=0')
   fi
 
-  # Clang 13 is still not in the Arch Linux repos.
-  #if [[ ${FORCE_LIBCXX} == yes ]]; then
-  #  _flags+=('use_custom_libcxx=true')
-  #else
-  #  _flags+=('use_custom_libcxx=false')
-  #fi
+  if [[ ${FORCE_LIBCXX} == yes ]]; then
+    _flags+=('use_custom_libcxx=true')
+  else
+    _flags+=('use_custom_libcxx=false')
+  fi
 
   # Taken from chromium-dev
   if [[ -z ${_system_libs[ffmpeg]+set} ]]; then
