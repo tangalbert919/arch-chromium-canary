@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=101.0.4920.0
+pkgver=101.0.4933.0
 pkgrel=1
 _launcher_ver=8
 _gcc_patchset=1
@@ -31,6 +31,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         #https://github.com/stha09/chromium-patches/releases/download/chromium-98-patchset-$_gcc_patchset/chromium-100-patchset-$_gcc_patchset.tar.xz
         # Custom patches (might be from upstream)
         sql-make-VirtualCursor-standard-layout-type.patch
+        chromium-101-libxml-unbundle.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -39,6 +40,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             '48700ddb7b6d90ff76ff386063e250baf7bced8a2c3242bfcc62b526c098f557'
             # Hash(es) for custom patches
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
+            'ea7a93442456a03549509022bca6f3a5e1600fa14caa062dd0fa0a6c45bbc9a8'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -99,14 +101,16 @@ prepare() {
   sed -i -e 's/\<xmlMalloc\>/malloc/' -e 's/\<xmlFree\>/free/' \
     third_party/blink/renderer/core/xml/*.cc \
     third_party/blink/renderer/core/xml/parser/xml_document_parser.cc \
-    third_party/libxml/chromium/*.cc
+    third_party/libxml/chromium/*.cc \
+    third_party/maldoca/src/maldoca/ole/oss_utils.h
 
-  # Only apply this patch if Google Clang is not used.
+  # Apply patches if Google Clang is not used.
   if [[ ${GOOGLE_CLANG} != yes ]]; then
-    # Upstream or custom patches
     patch -Np1 -i ../sql-make-VirtualCursor-standard-layout-type.patch
-    patch -Np1 -i ../patches/chromium-101-VulkanFunctionPointers-include.patch
+    #patch -Np1 -i ../patches/chromium-101-VulkanFunctionPointers-include.patch
   fi
+
+  patch -Np1 -i ../chromium-101-libxml-unbundle.patch
 
   mkdir -p third_party/node/linux/node-linux-x64/bin
   ln -sf /usr/bin/node third_party/node/linux/node-linux-x64/bin/
@@ -189,6 +193,7 @@ build() {
     'host_toolchain="//build/toolchain/linux/unbundle:default"'
     'clang_use_chrome_plugins=false'
     'is_official_build=true' # implies is_cfi=true on x86_64
+    'symbol_level=0' # sufficient for backtraces on x86(_64)
     'treat_warnings_as_errors=false'
     'disable_fieldtrial_testing_config=true'
     'blink_enable_generated_code_formatting=false'
@@ -200,10 +205,9 @@ build() {
     'use_sysroot=false'
     'enable_hangout_services_extension=true'
     'enable_widevine=true'
-    'use_vaapi=true'
     'enable_nacl=false'
     "google_api_key=\"${_google_api_key}\""
-    'is_cfi=false'
+    'use_vaapi=true'
     'use_ozone=true'
     'ozone_auto_platforms=false'
     'ozone_platform_headless=true'
@@ -211,12 +215,13 @@ build() {
     'ozone_platform="x11"'
   )
 
-  if [[ -n ${_system_libs[icu]+set} ]]; then
-    _flags+=('icu_use_data_file=false')
+  # PGO profiles cannot be read with system Clang.
+  if [[ ${GOOGLE_CLANG} != yes]]; then
+    _flags+=('chrome_pgo_phase=0')
   fi
 
-  if check_option strip y; then
-    _flags+=('symbol_level=0')
+  if [[ -n ${_system_libs[icu]+set} ]]; then
+    _flags+=('icu_use_data_file=false')
   fi
 
   if [[ ${FORCE_LIBCXX} == yes ]]; then
@@ -246,6 +251,10 @@ build() {
   CFLAGS+='   -Wno-unknown-warning-option'
   CXXFLAGS+=' -Wno-unknown-warning-option'
 
+  # Let Chromium set its own symbol level
+  CFLAGS=${CFLAGS/-g }
+  CXXFLAGS=${CXXFLAGS/-g }
+
   # Use libc++ if libstdc++ does not work.
   if [[ ${FORCE_LIBCXX} == yes ]]; then
     CXXFLAGS+=' -stdlib=libc++'
@@ -255,6 +264,14 @@ build() {
   # Get rid of the "-fexceptions" flag.
   CFLAGS="${CFLAGS/-fexceptions/}"
   CXXFLAGS="${CXXFLAGS/-fexceptions/}"
+
+  # This appears to cause random segfaults when combined with ThinLTO
+  # https://bugs.archlinux.org/task/73518
+  CFLAGS=${CFLAGS/-fstack-clash-protection}
+  CXXFLAGS=${CXXFLAGS/-fstack-clash-protection}
+
+  # https://crbug.com/957519#c122
+  CXXFLAGS=${CXXFLAGS/-Wp,-D_GLIBCXX_ASSERTIONS}
 
   gn gen out/Release --args="${_flags[*]}"
   ninja -C out/Release chrome chrome_sandbox chromedriver
