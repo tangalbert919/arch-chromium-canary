@@ -105,6 +105,7 @@ prepare() {
   if [[ ${GOOGLE_CLANG} != yes ]]; then
     # Upstream or custom patches
     patch -Np1 -i ../sql-make-VirtualCursor-standard-layout-type.patch
+    patch -Np1 -i ../patches/chromium-101-VulkanFunctionPointers-include.patch
   fi
 
   mkdir -p third_party/node/linux/node-linux-x64/bin
