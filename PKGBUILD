@@ -38,7 +38,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             # Hash for patchset
             '48700ddb7b6d90ff76ff386063e250baf7bced8a2c3242bfcc62b526c098f557'
             # Hash(es) for custom patches
-            'c81a6b53d48d44188f8dbb9c6cd644657fec102df862c05f3bfdaed9e4c39dba'
+            'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
