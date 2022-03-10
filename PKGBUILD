@@ -32,6 +32,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         # Custom patches (might be from upstream)
         sql-make-VirtualCursor-standard-layout-type.patch
         chromium-101-libxml-unbundle.patch
+        chromium-fix-build-errors.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -41,6 +42,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             # Hash(es) for custom patches
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             'ea7a93442456a03549509022bca6f3a5e1600fa14caa062dd0fa0a6c45bbc9a8'
+            '3b7c3358009cc6424bf4712862bd4d2ca8a95f198281267a537bd08a374a73a8'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -108,6 +110,7 @@ prepare() {
   if [[ ${GOOGLE_CLANG} != yes ]]; then
     patch -Np1 -i ../sql-make-VirtualCursor-standard-layout-type.patch
     #patch -Np1 -i ../patches/chromium-101-VulkanFunctionPointers-include.patch
+    patch -Np1 -i ../chromium-fix-build-errors.patch
   fi
 
   patch -Np1 -i ../chromium-101-libxml-unbundle.patch
@@ -216,7 +219,7 @@ build() {
   )
 
   # PGO profiles cannot be read with system Clang.
-  if [[ ${GOOGLE_CLANG} != yes]]; then
+  if [[ ${GOOGLE_CLANG} != yes ]]; then
     _flags+=('chrome_pgo_phase=0')
   fi
 
@@ -262,8 +265,10 @@ build() {
   fi
 
   # Get rid of the "-fexceptions" flag.
-  CFLAGS="${CFLAGS/-fexceptions/}"
-  CXXFLAGS="${CXXFLAGS/-fexceptions/}"
+  CFLAGS=${CFLAGS/-fexceptions}
+  CFLAGS=${CFLAGS/-fcf-protection}
+  CXXFLAGS=${CXXFLAGS/-fexceptions}
+  CXXFLAGS=${CXXFLAGS/-fcf-protection}
 
   # This appears to cause random segfaults when combined with ThinLTO
   # https://bugs.archlinux.org/task/73518
@@ -274,7 +279,7 @@ build() {
   CXXFLAGS=${CXXFLAGS/-Wp,-D_GLIBCXX_ASSERTIONS}
 
   gn gen out/Release --args="${_flags[*]}"
-  ninja -C out/Release chrome chrome_sandbox chromedriver
+  ninja -C out/Release chrome chrome_sandbox chromedriver.unstripped
 }
 
 package() {
