@@ -294,7 +294,7 @@ package() {
   install -D out/Release/chromium-canary "$pkgdir/usr/lib/chromium-canary/chromium-canary"
   install -Dm4755 out/Release/chrome_sandbox "$pkgdir/usr/lib/chromium-canary/chrome-sandbox"
   install -D out/Release/chrome_crashpad_handler "$pkgdir/usr/lib/chromium-canary/chrome_crashpad_handler"
-  ln -sf /usr/lib/chromium-canary/chromedriver "$pkgdir/usr/bin/chromedriver-canary"
+  ln -sf /usr/lib/chromium-canary/chromedriver.unstripped "$pkgdir/usr/bin/chromedriver-canary"
 
   # Install .desktop and manpages.
   install -Dm644 chrome/installer/linux/common/desktop.template \
@@ -312,7 +312,7 @@ package() {
   # Install resources and locales.
   cp \
     out/Release/{chrome_{100,200}_percent,resources}.pak \
-    out/Release/{*.bin,chromedriver} \
+    out/Release/{*.bin,chromedriver.unstripped} \
     out/Release/lib{EGL,GLESv2}.so \
     "$pkgdir/usr/lib/chromium-canary/"
   install -Dm644 -t "$pkgdir/usr/lib/chromium-canary/locales" out/Release/locales/*.pak
