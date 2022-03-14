@@ -7,7 +7,7 @@ pkgname=chromium-canary
 pkgver=101.0.4942.0
 pkgrel=1
 _launcher_ver=8
-_gcc_patchset=1
+_gcc_patchset=2
 pkgdesc="A web browser built for speed, simplicity, and security"
 arch=('x86_64')
 url="https://www.chromium.org/Home"
@@ -38,7 +38,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
             '213e50f48b67feb4441078d50b0fd431df34323be15be97c55302d3fdac4483a'
             # Hash for patchset
-            '48700ddb7b6d90ff76ff386063e250baf7bced8a2c3242bfcc62b526c098f557'
+            'cdb9e0da659b379905911ede323ec3bbd26f31c8fd9294abbef491257e4a8a6f'
             # Hash(es) for custom patches
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             'ea7a93442456a03549509022bca6f3a5e1600fa14caa062dd0fa0a6c45bbc9a8'
@@ -109,8 +109,13 @@ prepare() {
   # Apply patches if Google Clang is not used.
   if [[ ${GOOGLE_CLANG} != yes ]]; then
     patch -Np1 -i ../sql-make-VirtualCursor-standard-layout-type.patch
-    #patch -Np1 -i ../patches/chromium-101-VulkanFunctionPointers-include.patch
     patch -Np1 -i ../chromium-fix-build-errors.patch
+    patch -Np1 -i ../patches/chromium-101-WebURL
+  fi
+
+  # Apply patches if libc++ is not used.
+  if [[ ${FORCE_LIBCXX} != yes ]]; then
+    patch -Np1 -i ../patches/chromium-101-WebURLLoaderFactory-incomplete-type.patch
   fi
 
   patch -Np1 -i ../chromium-101-libxml-unbundle.patch
