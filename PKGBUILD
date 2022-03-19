@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=101.0.4949.0
+pkgver=101.0.4951.0
 pkgrel=1
 _launcher_ver=8
 _gcc_patchset=2
@@ -110,7 +110,6 @@ prepare() {
   if [[ ${GOOGLE_CLANG} != yes ]]; then
     patch -Np1 -i ../sql-make-VirtualCursor-standard-layout-type.patch
     patch -Np1 -i ../chromium-fix-build-errors.patch
-    patch -Np1 -i ../patches/chromium-101-WebURL
   fi
 
   # Apply patches if libc++ is not used.
