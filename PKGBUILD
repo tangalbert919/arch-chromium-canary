@@ -113,9 +113,9 @@ prepare() {
   fi
 
   # Apply patches if libc++ is not used.
-  if [[ ${FORCE_LIBCXX} != yes ]]; then
+  #if [[ ${FORCE_LIBCXX} != yes ]]; then
     #patch -Np1 -i ../patches/chromium-101-WebURLLoaderFactory-incomplete-type.patch
-  fi
+  #fi
 
   patch -Np1 -i ../chromium-101-libxml-unbundle.patch
 
