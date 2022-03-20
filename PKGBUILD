@@ -27,12 +27,11 @@ install=chromium.install
 source=(https://commondatastorage.googleapis.com/chromium-browser-official/chromium-$pkgver.tar.xz
         chromium-launcher-$_launcher_ver.tar.gz::https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver.tar.gz
         # Patchset
-        https://github.com/stha09/chromium-patches/releases/download/chromium-${pkgver%%.*}-patchset-$_gcc_patchset/chromium-${pkgver%%.*}-patchset-$_gcc_patchset.tar.xz
-        #https://github.com/stha09/chromium-patches/releases/download/chromium-98-patchset-$_gcc_patchset/chromium-100-patchset-$_gcc_patchset.tar.xz
+        #https://github.com/stha09/chromium-patches/releases/download/chromium-${pkgver%%.*}-patchset-$_gcc_patchset/chromium-${pkgver%%.*}-patchset-$_gcc_patchset.tar.xz
+        https://github.com/stha09/chromium-patches/releases/download/chromium-98-patchset-$_gcc_patchset/chromium-101-patchset-$_gcc_patchset.tar.xz
         # Custom patches (might be from upstream)
         sql-make-VirtualCursor-standard-layout-type.patch
         chromium-101-libxml-unbundle.patch
-        chromium-fix-build-errors.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -42,7 +41,6 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             # Hash(es) for custom patches
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             'ea7a93442456a03549509022bca6f3a5e1600fa14caa062dd0fa0a6c45bbc9a8'
-            '3b7c3358009cc6424bf4712862bd4d2ca8a95f198281267a537bd08a374a73a8'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -109,7 +107,6 @@ prepare() {
   # Apply patches if Google Clang is not used.
   if [[ ${GOOGLE_CLANG} != yes ]]; then
     patch -Np1 -i ../sql-make-VirtualCursor-standard-layout-type.patch
-    patch -Np1 -i ../chromium-fix-build-errors.patch
   fi
 
   # Apply patches if libc++ is not used.
