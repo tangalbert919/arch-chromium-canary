@@ -69,8 +69,6 @@ if [[ ${FORCE_LIBCXX} != yes ]]; then
     [re2]=re2
     [snappy]=snappy
   )
-else
-  depends+=('libc++')
 fi
 
 _unwanted_bundled_libs=(
