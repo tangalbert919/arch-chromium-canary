@@ -173,6 +173,11 @@ prepare() {
 build() {
   make -C chromium-launcher-$_launcher_ver CHROMIUM_SUFFIX="-canary"
 
+  # Doing this should lower the amount of misses for ccache.
+  #if check_buildoption ccache y; then
+  #  export CCACHE_BASEDIR="$(pwd)"
+  #fi
+
   cd "$srcdir/chromium-$pkgver"
 
   if check_buildoption ccache y; then
@@ -258,12 +263,6 @@ build() {
   # Let Chromium set its own symbol level
   CFLAGS=${CFLAGS/-g }
   CXXFLAGS=${CXXFLAGS/-g }
-
-  # Use libc++ if libstdc++ does not work.
-  if [[ ${FORCE_LIBCXX} == yes ]]; then
-    CXXFLAGS+=' -stdlib=libc++'
-    LDFLAGS+='  -stdlib=libc++'
-  fi
 
   # Get rid of the "-fexceptions" flag.
   CFLAGS=${CFLAGS/-fexceptions}
