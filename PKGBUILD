@@ -32,6 +32,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         # Custom patches (might be from upstream)
         sql-make-VirtualCursor-standard-layout-type.patch
         chromium-101-libxml-unbundle.patch
+        chromium-102-remove-orchestrator.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -41,6 +42,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             # Hash(es) for custom patches
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             'ea7a93442456a03549509022bca6f3a5e1600fa14caa062dd0fa0a6c45bbc9a8'
+            '954f3ecaed2c0886712f2b7135421d0fbfd56a6d4ef89e08443404fdb7f32cf6'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -113,6 +115,7 @@ prepare() {
   #fi
 
   patch -Np1 -i ../chromium-101-libxml-unbundle.patch
+  patch -Np0 -i ../chromium-102-remove-orchestrator.patch
 
   mkdir -p third_party/node/linux/node-linux-x64/bin
   ln -sf /usr/bin/node third_party/node/linux/node-linux-x64/bin/
