@@ -28,7 +28,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         chromium-launcher-$_launcher_ver.tar.gz::https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver.tar.gz
         # Patchset
         #https://github.com/stha09/chromium-patches/releases/download/chromium-${pkgver%%.*}-patchset-$_gcc_patchset/chromium-${pkgver%%.*}-patchset-$_gcc_patchset.tar.xz
-        https://github.com/stha09/chromium-patches/releases/download/chromium-98-patchset-$_gcc_patchset/chromium-101-patchset-$_gcc_patchset.tar.xz
+        https://github.com/stha09/chromium-patches/releases/download/chromium-101-patchset-$_gcc_patchset/chromium-101-patchset-$_gcc_patchset.tar.xz
         # Custom patches (might be from upstream)
         sql-make-VirtualCursor-standard-layout-type.patch
         chromium-101-libxml-unbundle.patch
