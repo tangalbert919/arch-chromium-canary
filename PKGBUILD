@@ -7,7 +7,7 @@ pkgname=chromium-canary
 pkgver=102.0.4980.0
 pkgrel=1
 _launcher_ver=8
-_gcc_patchset=3
+_gcc_patchset=1
 pkgdesc="A web browser built for speed, simplicity, and security"
 arch=('x86_64')
 url="https://www.chromium.org/Home"
@@ -27,8 +27,8 @@ install=chromium.install
 source=(https://commondatastorage.googleapis.com/chromium-browser-official/chromium-$pkgver.tar.xz
         chromium-launcher-$_launcher_ver.tar.gz::https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver.tar.gz
         # Patchset
-        #https://github.com/stha09/chromium-patches/releases/download/chromium-${pkgver%%.*}-patchset-$_gcc_patchset/chromium-${pkgver%%.*}-patchset-$_gcc_patchset.tar.xz
-        https://github.com/stha09/chromium-patches/releases/download/chromium-101-patchset-$_gcc_patchset/chromium-101-patchset-$_gcc_patchset.tar.xz
+        https://github.com/stha09/chromium-patches/releases/download/chromium-${pkgver%%.*}-patchset-$_gcc_patchset/chromium-${pkgver%%.*}-patchset-$_gcc_patchset.tar.xz
+        #https://github.com/stha09/chromium-patches/releases/download/chromium-101-patchset-$_gcc_patchset/chromium-101-patchset-$_gcc_patchset.tar.xz
         # Custom patches (might be from upstream)
         sql-make-VirtualCursor-standard-layout-type.patch
         chromium-101-libxml-unbundle.patch
@@ -38,7 +38,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
             '213e50f48b67feb4441078d50b0fd431df34323be15be97c55302d3fdac4483a'
             # Hash for patchset
-            '065872bbdfc0a6baf97ec0c11c70fe3a3790aa5b59c463c52e5958d4af60a4f6'
+            'fc854d6acb6b85fa78f97d834f58a159a559da10a4f2ee143fa3f94c8f11c6cf'
             # Hash(es) for custom patches
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             'ea7a93442456a03549509022bca6f3a5e1600fa14caa062dd0fa0a6c45bbc9a8'
