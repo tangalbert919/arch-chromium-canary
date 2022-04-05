@@ -18,6 +18,12 @@ To use Google's Clang instead of system Clang, run this command:
 
 `FORCE_LIBCXX=yes` and `GOOGLE_CLANG=yes` can both be passed before `makepkg`.
 
+## Developer info:
+
+To update the Chromium version to build, you can either edit the PKGBUILD file or run this command:
+
+`python update_chromium.py`
+
 ## Credits:
 
 * The PKGBUILD used is the modified version of this [PKGBUILD](https://git.archlinux.org/svntogit/packages.git/tree/trunk/PKGBUILD?h=packages/chromium) for the stable version of Chromium on Arch Linux.
