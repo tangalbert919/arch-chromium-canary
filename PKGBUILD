@@ -33,6 +33,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         sql-make-VirtualCursor-standard-layout-type.patch
         chromium-101-libxml-unbundle.patch
         chromium-102-remove-orchestrator.patch
+        chromium-102-disable-dawn.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -43,12 +44,13 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             'ea7a93442456a03549509022bca6f3a5e1600fa14caa062dd0fa0a6c45bbc9a8'
             '954f3ecaed2c0886712f2b7135421d0fbfd56a6d4ef89e08443404fdb7f32cf6'
+            'edb917ee0a244e3d85b57a52560c99c5aaa3fd00d6a6346910722f20a26045f9'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
 # Keys are the names in the above script; values are the dependencies in Arch
 declare -gA _system_libs=(
-  [ffmpeg]=ffmpeg
+  #[ffmpeg]=ffmpeg
   [flac]=flac
   [fontconfig]=fontconfig
   [freetype]=freetype2
@@ -116,6 +118,7 @@ prepare() {
 
   patch -Np1 -i ../chromium-101-libxml-unbundle.patch
   patch -Np0 -i ../chromium-102-remove-orchestrator.patch
+  patch -Np0 -i ../chromium-102-disable-dawn.patch
 
   mkdir -p third_party/node/linux/node-linux-x64/bin
   ln -sf /usr/bin/node third_party/node/linux/node-linux-x64/bin/

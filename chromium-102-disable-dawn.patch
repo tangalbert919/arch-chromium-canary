@@ -1,0 +1,12 @@
+--- third_party/dawn/generator/dawn_version_generator.py.orig	2022-04-04 22:49:50.711131300 -0500
++++ third_party/dawn/generator/dawn_version_generator.py	2022-04-04 22:49:43.578703900 -0500
+@@ -68,7 +68,8 @@
+         return [packed, resolved]
+ 
+     if not os.path.exists(resolved):
+-        raise Exception('Unable to resolve git HEAD hash file:', path)
++        return ['0000000000000000000000000000000000000001']
++        # raise Exception('Unable to resolve git HEAD hash file:', path)
+     return [resolved]
+ 
+ 
