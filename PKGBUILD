@@ -116,6 +116,7 @@ prepare() {
     #patch -Np1 -i ../patches/chromium-101-WebURLLoaderFactory-incomplete-type.patch
   #fi
 
+  # Custom or upstream patches.
   patch -Np1 -i ../chromium-101-libxml-unbundle.patch
   patch -Np0 -i ../chromium-102-remove-orchestrator.patch
   patch -Np0 -i ../chromium-102-disable-dawn.patch
@@ -296,9 +297,8 @@ package() {
 
   # Install binaries
   install -D out/Release/chromium-canary "$pkgdir/usr/lib/chromium-canary/chromium-canary"
+  install -D /usr/lib/chromium-canary/chromedriver.unstripped "$pkgdir/usr/bin/chromedriver-canary"
   install -Dm4755 out/Release/chrome_sandbox "$pkgdir/usr/lib/chromium-canary/chrome-sandbox"
-  install -D out/Release/chrome_crashpad_handler "$pkgdir/usr/lib/chromium-canary/chrome_crashpad_handler"
-  ln -sf /usr/lib/chromium-canary/chromedriver.unstripped "$pkgdir/usr/bin/chromedriver-canary"
 
   # Install .desktop and manpages.
   install -Dm644 chrome/installer/linux/common/desktop.template \
@@ -308,23 +308,33 @@ package() {
   sed -i \
     -e "s/@@MENUNAME@@/Chromium Canary/g" \
     -e "s/@@PACKAGE@@/chromium-canary/g" \
-    -e "s/@@PROGNAME@@/chromium-canary/g" \
     -e "s/@@USR_BIN_SYMLINK_NAME@@/chromium-canary/g" \
     "$pkgdir/usr/share/applications/chromium-canary.desktop" \
     "$pkgdir/usr/share/man/man1/chromium-canary.1"
 
+  install -Dm644 chrome/installer/linux/common/chromium-browser/chromium-browser.appdata.xml \
+    "$pkgdir/usr/share/metainfo/chromium-canary.appdata.xml"
+  sed -ni \
+    -e 's/chromium-browser\.desktop/chromium-canary.desktop/' \
+    -e '/<update_contact>/d' \
+    -e '/<p>/N;/<p>\n.*\(We invite\|Chromium supports Vorbis\)/,/<\/p>/d' \
+    -e '/^<?xml/,$p' \
+    "$pkgdir/usr/share/metainfo/chromium-canary.appdata.xml"
+
   # Install resources and locales.
   cp \
     out/Release/{chrome_{100,200}_percent,resources}.pak \
-    out/Release/{*.bin,chromedriver.unstripped} \
+    out/Release/{v8_context_snapshot.bin,chrome_crashpad_handler} \
     out/Release/lib{EGL,GLESv2}.so \
+    out/Release/{libvk_swiftshader.so,vk_swiftshader_icd.json} \
     "$pkgdir/usr/lib/chromium-canary/"
-  install -Dm644 -t "$pkgdir/usr/lib/chromium-canary/locales" out/Release/locales/*.pak
-  install -Dm755 -t "$pkgdir/usr/lib/chromium-canary/swiftshader" out/Release/swiftshader/*.so
 
   if [[ -z ${_system_libs[icu]+set} ]]; then
     cp out/Release/icudtl.dat "$pkgdir/usr/lib/chromium-canary/"
   fi
+
+  install -Dm644 -t "$pkgdir/usr/lib/chromium-canary/locales" out/Release/locales/*.pak
+  install -Dm755 -t "$pkgdir/usr/lib/chromium-canary/swiftshader" out/Release/swiftshader/*.so
 
   # Install icons.
   for size in 24 48 64 128 256; do
