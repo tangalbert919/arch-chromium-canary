@@ -178,9 +178,9 @@ build() {
   make -C chromium-launcher-$_launcher_ver CHROMIUM_SUFFIX="-canary"
 
   # Doing this should lower the amount of misses for ccache.
-  #if check_buildoption ccache y; then
-  #  export CCACHE_BASEDIR="$(pwd)"
-  #fi
+  if check_buildoption ccache y; then
+    export CCACHE_BASEDIR="$(pwd)"
+  fi
 
   cd "$srcdir/chromium-$pkgver"
 
