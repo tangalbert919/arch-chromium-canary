@@ -298,7 +298,7 @@ package() {
 
   # Install binaries
   install -D out/Release/chromium-canary "$pkgdir/usr/lib/chromium-canary/chromium-canary"
-  install -D /usr/lib/chromium-canary/chromedriver.unstripped "$pkgdir/usr/bin/chromedriver-canary"
+  install -D out/Release/chromedriver.unstripped "$pkgdir/usr/bin/chromedriver-canary"
   install -Dm4755 out/Release/chrome_sandbox "$pkgdir/usr/lib/chromium-canary/chrome-sandbox"
 
   # Install .desktop and manpages.
