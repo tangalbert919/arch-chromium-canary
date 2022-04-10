@@ -35,7 +35,7 @@ jobs:
                   CHROMIUM_VERSION="$(compgen -G "*.src.tar.gz" | grep -Po '([\d\.]+-\d*)')"
 
                   REGISTRY="ghcr.io/${{ github.repository_owner }}"
-                  NAME="ungoogled-chromium-archlinux"
+                  NAME="arch-chromium-canary"
 
                   ID="$(echo $REGISTRY/$NAME | tr '[A-Z]' '[a-z]')"
                   REF="$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')"
