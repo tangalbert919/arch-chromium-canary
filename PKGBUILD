@@ -33,6 +33,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         chromium-101-libxml-unbundle.patch
         chromium-102-remove-orchestrator.patch
         chromium-102-disable-dawn.patch
+        chromium-102-autofill-IWYU.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -44,6 +45,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             'ea7a93442456a03549509022bca6f3a5e1600fa14caa062dd0fa0a6c45bbc9a8'
             '954f3ecaed2c0886712f2b7135421d0fbfd56a6d4ef89e08443404fdb7f32cf6'
             'edb917ee0a244e3d85b57a52560c99c5aaa3fd00d6a6346910722f20a26045f9'
+            '8c14df34a715065bcd5ec68765e8cf09aeaa163d0b1ecedd753cb1bed5742ddd'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -111,10 +113,9 @@ prepare() {
   fi
 
   # Apply patches if libc++ is not used.
-  #if [[ ${FORCE_LIBCXX} != yes ]]; then
-  #  patch -Np1 -i ../chromium-102-views_utils-memory.patch
-  #  patch -Np1 -i ../chromium-102-StatsEntry-vector.patch
-  #fi
+  if [[ ${FORCE_LIBCXX} != yes ]]; then
+    patch -Np1 -i ../chromium-102-autofill-IWYU.patch
+  fi
 
   # Custom or upstream patches.
   patch -Np1 -i ../chromium-101-libxml-unbundle.patch
