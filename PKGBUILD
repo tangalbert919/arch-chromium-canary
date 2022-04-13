@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=102.0.5001.0
+pkgver=102.0.5002.2
 pkgrel=1
 _launcher_ver=8
 _gcc_patchset=3
@@ -117,8 +117,13 @@ prepare() {
 
   # Custom or upstream patches.
   patch -Np1 -i ../chromium-101-libxml-unbundle.patch
-  patch -Np0 -i ../chromium-102-remove-orchestrator.patch
+  #patch -Np0 -i ../chromium-102-remove-orchestrator.patch
   patch -Np0 -i ../chromium-102-disable-dawn.patch
+
+  # Alternative to removing the orchestrator.
+  touch third_party/blink/tools/merge_web_test_results.pydeps
+  mkdir -p third_party/blink/tools/blinkpy/web_tests
+  touch third_party/blink/tools/blinkpy/web_tests/merge_results.pydeps
 
   mkdir -p third_party/node/linux/node-linux-x64/bin
   ln -sf /usr/bin/node third_party/node/linux/node-linux-x64/bin/
