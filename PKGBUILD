@@ -7,7 +7,7 @@ pkgname=chromium-canary
 pkgver=102.0.5001.0
 pkgrel=1
 _launcher_ver=8
-_gcc_patchset=2
+_gcc_patchset=3
 pkgdesc="A web browser built for speed, simplicity, and security"
 arch=('x86_64')
 url="https://www.chromium.org/Home"
@@ -38,7 +38,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
             '213e50f48b67feb4441078d50b0fd431df34323be15be97c55302d3fdac4483a'
             # Hash for patchset
-            'b7cc17235cbb75c9259d97c320780ef041886442dff1c489fbfcfb46d36a821d'
+            '2aef07f0bc19924cc6a60168d6b2868252bb4c7c9ccf6df42dc44538f96fecf3'
             # Hash(es) for custom patches
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             'ea7a93442456a03549509022bca6f3a5e1600fa14caa062dd0fa0a6c45bbc9a8'
