@@ -1,0 +1,10 @@
+--- base/i18n/icu_util.cc.orig	2022-04-16 19:27:24.753996300 -0500
++++ base/i18n/icu_util.cc	2022-04-16 19:27:31.817602000 -0500
+@@ -10,6 +10,7 @@
+ #include <windows.h>
+ #endif
+ 
++#include <cstring>
+ #include <memory>
+ #include <string>
+ 

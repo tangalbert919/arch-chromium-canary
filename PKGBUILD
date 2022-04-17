@@ -33,6 +33,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         chromium-101-libxml-unbundle.patch
         chromium-102-disable-dawn.patch
         chromium-102-no-opaque-pointers.patch
+        chromium-103-IWYU-icu_util.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -44,6 +45,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             'ea7a93442456a03549509022bca6f3a5e1600fa14caa062dd0fa0a6c45bbc9a8'
             'edb917ee0a244e3d85b57a52560c99c5aaa3fd00d6a6346910722f20a26045f9'
             'a108edd984e42884089a5de063f9c069a936d29dd066b68c90b5dac6529a8d05'
+            'ab5723f3ca24ff25f132af1138d29df55992676b814dcaae267c9825a7a9776e'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -119,6 +121,7 @@ prepare() {
   patch -Np1 -i ../chromium-101-libxml-unbundle.patch
   patch -Np0 -i ../chromium-102-disable-dawn.patch
   patch -Np0 -i ../chromium-102-no-opaque-pointers.patch
+  patch -Np0 -i ../chromium-103-IWYU-icu_util.patch
 
   # Alternative to removing the orchestrator.
   touch third_party/blink/tools/merge_web_test_results.pydeps
