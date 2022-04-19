@@ -47,7 +47,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             'edb917ee0a244e3d85b57a52560c99c5aaa3fd00d6a6346910722f20a26045f9'
             'a108edd984e42884089a5de063f9c069a936d29dd066b68c90b5dac6529a8d05'
             'ab5723f3ca24ff25f132af1138d29df55992676b814dcaae267c9825a7a9776e'
-            '7cbb32ce521bcf1f4b7671fab1d531d4400d2703b26f4f62bfc1805e366b530d'
+            '4eb22c0ea1b6389d53577d2ae4b2f6ffec4b469454ca13a8ff7fd8ecc5f90b0d'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -115,16 +115,15 @@ prepare() {
   fi
 
   # Apply patches if libc++ is not used.
-  #if [[ ${FORCE_LIBCXX} != yes ]]; then
-  #  patch -Np1 -i ../chromium-102-autofill-IWYU.patch
-  #fi
+  if [[ ${FORCE_LIBCXX} != yes ]]; then
+    patch -Np0 -i ../chromium-103-IWYU-icu_util.patch
+    patch -Np1 -i ../chromium-103-database-DCHECK.patch
+  fi
 
   # Custom or upstream patches.
   patch -Np1 -i ../chromium-101-libxml-unbundle.patch
   patch -Np0 -i ../chromium-102-disable-dawn.patch
   patch -Np0 -i ../chromium-102-no-opaque-pointers.patch
-  patch -Np0 -i ../chromium-103-IWYU-icu_util.patch
-  patch -Np0 -i ../chromium-103-database-DCHECK.patch
 
   # Alternative to removing the orchestrator.
   touch third_party/blink/tools/merge_web_test_results.pydeps
