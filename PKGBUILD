@@ -33,6 +33,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         chromium-101-libxml-unbundle.patch
         chromium-102-no-opaque-pointers.patch
         chromium-103-IWYU-icu_util.patch
+        chromium-103-IWYU-passwords.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -43,7 +44,8 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             'ea7a93442456a03549509022bca6f3a5e1600fa14caa062dd0fa0a6c45bbc9a8'
             'a108edd984e42884089a5de063f9c069a936d29dd066b68c90b5dac6529a8d05'
-            'ab5723f3ca24ff25f132af1138d29df55992676b814dcaae267c9825a7a9776e'
+            '8ff40383265ad232b6e3a8f0434886b1d91a57d02b4da1ec0e987d1c2821fb6e'
+            'c911d43a242e9da262c810d46c75db9b181e467d508e2403b5ae40e0a15bcc89'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -112,7 +114,8 @@ prepare() {
 
   # Apply patches if libc++ is not used.
   if [[ ${FORCE_LIBCXX} != yes ]]; then
-    patch -Np0 -i ../chromium-103-IWYU-icu_util.patch
+    patch -Np1 -i ../chromium-103-IWYU-icu_util.patch
+    patch -Np1 -i ../chromium-103-IWYU-passwords.patch
   fi
 
   # Custom or upstream patches.

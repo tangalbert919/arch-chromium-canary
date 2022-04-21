@@ -1,10 +1,37 @@
---- base/i18n/icu_util.cc.orig	2022-04-16 19:27:24.753996300 -0500
-+++ base/i18n/icu_util.cc	2022-04-16 19:27:31.817602000 -0500
-@@ -10,6 +10,7 @@
+From 35d91f58fa26cc6ba085c8470cbb6695ccc91cb2 Mon Sep 17 00:00:00 2001
+From: Stephan Hartmann <stha09@googlemail.com>
+Date: Thu, 21 Apr 2022 15:16:44 +0000
+Subject: [PATCH] IWYU: remove namespace std from strlen in icu_util.cc
+
+Bug: 957519
+Change-Id: I2bbc29dc3d25a776917f3dee9932c80330740e8e
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/3587230
+Reviewed-by: Wez <wez@chromium.org>
+Commit-Queue: Stephan Hartmann <stha09@googlemail.com>
+Cr-Commit-Position: refs/heads/main@{#994709}
+---
+ base/i18n/icu_util.cc | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/base/i18n/icu_util.cc b/base/i18n/icu_util.cc
+index 584044cddfe31..83c641d3cfae8 100644
+--- a/base/i18n/icu_util.cc
++++ b/base/i18n/icu_util.cc
+@@ -10,6 +10,8 @@
  #include <windows.h>
  #endif
  
-+#include <cstring>
++#include <string.h>
++
  #include <memory>
  #include <string>
  
+@@ -407,7 +409,7 @@ static void U_CALLCONV TraceICUData(const void* context,
+     }
+     case UTRACE_UBRK_CREATE_LINE: {
+       const char* lb_type = va_arg(args, const char*);
+-      auto lb_type_len = std::strlen(lb_type);
++      auto lb_type_len = strlen(lb_type);
+       va_end(args);
+       ICUCreateInstance value;
+       if (lb_type_len < 6) {
