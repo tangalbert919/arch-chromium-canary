@@ -22,7 +22,7 @@ optdepends=('pipewire: WebRTC desktop sharing under Wayland'
             'kdialog: needed for file dialogs in KDE'
             'org.freedesktop.secrets: password storage backend on GNOME / Xfce'
             'kwallet: for storing passwords in KWallet on KDE desktops')
-
+options=('!lto')
 source=(https://commondatastorage.googleapis.com/chromium-browser-official/chromium-$pkgver.tar.xz
         chromium-launcher-$_launcher_ver.tar.gz::https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver.tar.gz
         # Patchset
@@ -32,6 +32,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         sql-make-VirtualCursor-standard-layout-type.patch
         chromium-101-libxml-unbundle.patch
         chromium-102-no-opaque-pointers.patch
+        chromium-103-IWYU-webid.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -42,6 +43,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             'ea7a93442456a03549509022bca6f3a5e1600fa14caa062dd0fa0a6c45bbc9a8'
             'a108edd984e42884089a5de063f9c069a936d29dd066b68c90b5dac6529a8d05'
+            '2e6e5ff5b02d6ca2944a02a9ff105087d9cabe105137c19ab179c0f2a5973709'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -109,10 +111,9 @@ prepare() {
   fi
 
   # Apply patches if libc++ is not used.
-  #if [[ ${FORCE_LIBCXX} != yes ]]; then
-  #  patch -Np1 -i ../chromium-103-IWYU-icu_util.patch
-  #  patch -Np1 -i ../chromium-103-IWYU-passwords.patch
-  #fi
+  if [[ ${FORCE_LIBCXX} != yes ]]; then
+    patch -Np1 -i ../chromium-103-IWYU-webid.patch
+  fi
 
   # Custom or upstream patches.
   patch -Np1 -i ../chromium-101-libxml-unbundle.patch
