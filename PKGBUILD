@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=103.0.5019.0
+pkgver=103.0.5020.0
 pkgrel=1
 _launcher_ver=8
 _gcc_patchset=3
@@ -112,7 +112,7 @@ prepare() {
 
   # Apply patches if libc++ is not used.
   if [[ ${FORCE_LIBCXX} != yes ]]; then
-    patch -Np1 -i ../chromium-103-IWYU-webid.patch
+    patch -Np0 -i ../chromium-103-IWYU-webid.patch
   fi
 
   # Custom or upstream patches.
