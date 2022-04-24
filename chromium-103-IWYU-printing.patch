@@ -1,0 +1,10 @@
+--- printing/page_range.cc.orig	2022-04-24 10:15:25.964607700 -0500
++++ printing/page_range.cc	2022-04-24 10:14:52.411005800 -0500
+@@ -6,6 +6,7 @@
+ 
+ #include <stddef.h>
+ 
++#include <algorithm>
+ #include <set>
+ 
+ namespace printing {

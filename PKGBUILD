@@ -33,6 +33,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         chromium-101-libxml-unbundle.patch
         chromium-102-no-opaque-pointers.patch
         chromium-103-IWYU-webid.patch
+        chromium-103-IWYU-printing.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -44,6 +45,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             'ea7a93442456a03549509022bca6f3a5e1600fa14caa062dd0fa0a6c45bbc9a8'
             'a108edd984e42884089a5de063f9c069a936d29dd066b68c90b5dac6529a8d05'
             '2e6e5ff5b02d6ca2944a02a9ff105087d9cabe105137c19ab179c0f2a5973709'
+            '39437f6ac393ad7f954f36c4ce06f37777787f6005d3fc3c53e26e850f17503c'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -113,6 +115,7 @@ prepare() {
   # Apply patches if libc++ is not used.
   if [[ ${FORCE_LIBCXX} != yes ]]; then
     patch -Np0 -i ../chromium-103-IWYU-webid.patch
+    patch -Np0 -i ../chromium-103-IWYU-printing.patch
   fi
 
   # Custom or upstream patches.
