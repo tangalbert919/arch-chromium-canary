@@ -1,0 +1,25 @@
+From 12451bd40381cf754fc7791c08e3072a4f97ee2e Mon Sep 17 00:00:00 2001
+From: Stephan Hartmann <stha09@googlemail.com>
+Date: Mon, 25 Apr 2022 10:41:33 +0200
+Subject: [PATCH] libstdc++: fix incomplete type of blink::SourceLocation
+
+Destructor of std::unique_ptr in libstdc++ uses sizeof() which
+requires full definition of blink::SourceLocation in
+blink::IsolatedWorldCSPDelegate.
+
+Bug: 957519
+Change-Id: Icf028a4590750edd4a0610ba913b3fff5f9075e5
+---
+
+diff --git a/third_party/blink/renderer/bindings/core/v8/isolated_world_csp.cc b/third_party/blink/renderer/bindings/core/v8/isolated_world_csp.cc
+index 04879cd..d3a3acb 100644
+--- a/third_party/blink/renderer/bindings/core/v8/isolated_world_csp.cc
++++ b/third_party/blink/renderer/bindings/core/v8/isolated_world_csp.cc
+@@ -10,6 +10,7 @@
+ #include "third_party/blink/public/mojom/devtools/inspector_issue.mojom-blink.h"
+ #include "third_party/blink/public/mojom/security_context/insecure_request_policy.mojom-blink.h"
+ #include "third_party/blink/renderer/bindings/core/v8/script_controller.h"
++#include "third_party/blink/renderer/bindings/core/v8/source_location.h"
+ #include "third_party/blink/renderer/core/frame/csp/content_security_policy.h"
+ #include "third_party/blink/renderer/core/frame/local_dom_window.h"
+ #include "third_party/blink/renderer/core/inspector/inspector_audits_issue.h"

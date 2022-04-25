@@ -34,6 +34,10 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         chromium-102-no-opaque-pointers.patch
         chromium-103-IWYU-webid.patch
         chromium-103-IWYU-printing.patch
+        chromium-103-IWYU-media.patch
+        chromium-103-IWYU-blink.patch
+        chromium-103-IWYU-network.patch
+        chromium-103-IWYU-utility.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -46,6 +50,10 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             'a108edd984e42884089a5de063f9c069a936d29dd066b68c90b5dac6529a8d05'
             '2e6e5ff5b02d6ca2944a02a9ff105087d9cabe105137c19ab179c0f2a5973709'
             '39437f6ac393ad7f954f36c4ce06f37777787f6005d3fc3c53e26e850f17503c'
+            'a19075b5032bdc86b5a5887e55834a2f7a8ec9d8636d7a475ad655a859d70e19'
+            'aec07a9a8d29dbd52e4f32c42fa4647b6087295feee9db6fc648387dd32cc600'
+            'a8a754dc67303f7be8c6a265f5c6fa6f014d12a80891dff0f103242e011cec13'
+            '1665e2fc384b28d6ecc09188b4df585cb42c29b04d303addb015bb46ca5ac4aa'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -116,6 +124,10 @@ prepare() {
   if [[ ${FORCE_LIBCXX} != yes ]]; then
     patch -Np0 -i ../chromium-103-IWYU-webid.patch
     patch -Np0 -i ../chromium-103-IWYU-printing.patch
+    patch -Np1 -i ../chromium-103-IWYU-blink.patch
+    patch -Np1 -i ../chromium-103-IWYU-media.patch
+    patch -Np1 -i ../chromium-103-IWYU-network.patch
+    patch -Np1 -i ../chromium-103-IWYU-utility.patch
   fi
 
   # Custom or upstream patches.
