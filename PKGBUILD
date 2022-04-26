@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=103.0.5025.0
+pkgver=103.0.5026.0
 pkgrel=1
 _launcher_ver=8
 _gcc_patchset=3
@@ -30,14 +30,8 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         https://github.com/stha09/chromium-patches/releases/download/chromium-102-patchset-$_gcc_patchset/chromium-102-patchset-$_gcc_patchset.tar.xz
         # Custom patches (might be from upstream)
         sql-make-VirtualCursor-standard-layout-type.patch
-        chromium-101-libxml-unbundle.patch
         chromium-102-no-opaque-pointers.patch
-        chromium-103-IWYU-webid.patch
         chromium-103-IWYU-printing.patch
-        chromium-103-IWYU-media.patch
-        chromium-103-IWYU-blink.patch
-        chromium-103-IWYU-network.patch
-        chromium-103-IWYU-utility.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -46,14 +40,8 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             '2aef07f0bc19924cc6a60168d6b2868252bb4c7c9ccf6df42dc44538f96fecf3'
             # Hash(es) for custom patches
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
-            'ea7a93442456a03549509022bca6f3a5e1600fa14caa062dd0fa0a6c45bbc9a8'
             'a108edd984e42884089a5de063f9c069a936d29dd066b68c90b5dac6529a8d05'
-            '2e6e5ff5b02d6ca2944a02a9ff105087d9cabe105137c19ab179c0f2a5973709'
-            '39437f6ac393ad7f954f36c4ce06f37777787f6005d3fc3c53e26e850f17503c'
-            'a19075b5032bdc86b5a5887e55834a2f7a8ec9d8636d7a475ad655a859d70e19'
-            'aec07a9a8d29dbd52e4f32c42fa4647b6087295feee9db6fc648387dd32cc600'
-            'a8a754dc67303f7be8c6a265f5c6fa6f014d12a80891dff0f103242e011cec13'
-            '1665e2fc384b28d6ecc09188b4df585cb42c29b04d303addb015bb46ca5ac4aa'
+            '892249e6f4fba33dfd300d20b8a79cb6b390e6b419401432d3ae7c2d284ae5a6'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -122,16 +110,10 @@ prepare() {
 
   # Apply patches if libc++ is not used.
   if [[ ${FORCE_LIBCXX} != yes ]]; then
-    patch -Np0 -i ../chromium-103-IWYU-webid.patch
-    patch -Np0 -i ../chromium-103-IWYU-printing.patch
-    patch -Np1 -i ../chromium-103-IWYU-blink.patch
-    patch -Np1 -i ../chromium-103-IWYU-media.patch
-    patch -Np1 -i ../chromium-103-IWYU-network.patch
-    patch -Np1 -i ../chromium-103-IWYU-utility.patch
+    patch -Np1 -i ../chromium-103-IWYU-printing.patch
   fi
 
   # Custom or upstream patches.
-  patch -Np1 -i ../chromium-101-libxml-unbundle.patch
   patch -Np0 -i ../chromium-102-no-opaque-pointers.patch
 
   # Alternative to removing the orchestrator.
