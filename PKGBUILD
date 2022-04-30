@@ -32,6 +32,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         sql-make-VirtualCursor-standard-layout-type.patch
         chromium-102-no-opaque-pointers.patch
         chromium-103-IWYU-fenced_frame.patch
+        chromium-103-IWYU-widget_event_handler.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -42,6 +43,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             'a108edd984e42884089a5de063f9c069a936d29dd066b68c90b5dac6529a8d05'
             '25ddad98a77c412fed777432785846fe19c2fe9a7bdab3fc196854be974ac1ab'
+            'e5c2d709dad5a83bdbac36cabec08a40c94a16e14926ddecdad951be49b84053'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -111,6 +113,7 @@ prepare() {
   # Apply patches if libc++ is not used.
   if [[ ${FORCE_LIBCXX} != yes ]]; then
     patch -Np0 -i ../chromium-103-IWYU-fenced_frame.patch
+    patch -Np0 -i ../chromium-103-IWYU-widget_event_handler.patch
   fi
 
   # Custom or upstream patches.
