@@ -1,0 +1,10 @@
+--- third_party/blink/renderer/core/input/widget_event_handler.h.orig	2022-04-30 17:15:57.881620000 -0500
++++ third_party/blink/renderer/core/input/widget_event_handler.h	2022-04-30 17:09:51.468457400 -0500
+@@ -5,6 +5,7 @@
+ #ifndef THIRD_PARTY_BLINK_RENDERER_CORE_INPUT_WIDGET_EVENT_HANDLER_H_
+ #define THIRD_PARTY_BLINK_RENDERER_CORE_INPUT_WIDGET_EVENT_HANDLER_H_
+ 
++#include <memory>
+ #include <vector>
+ 
+ #include "third_party/blink/public/platform/web_input_event_result.h"
