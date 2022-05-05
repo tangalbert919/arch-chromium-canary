@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=103.0.5043.0
+pkgver=103.0.5044.0
 pkgrel=1
 _launcher_ver=8
 _gcc_patchset=3
@@ -31,8 +31,6 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         # Custom patches (might be from upstream)
         sql-make-VirtualCursor-standard-layout-type.patch
         chromium-102-no-opaque-pointers.patch
-        chromium-103-IWYU-content-browser.patch
-        chromium-103-libstdc-media.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -42,8 +40,6 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             # Hash(es) for custom patches
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             'a108edd984e42884089a5de063f9c069a936d29dd066b68c90b5dac6529a8d05'
-            'd0bac04cf8b9e8018c9bc2bf1c1fe1ed892535af6cc26c21bd33879d9f3365cd'
-            '7e708c53f8d14b80c68ef56e68484ee5df9df4938fb2311f0868c6902bfed0d1'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -111,10 +107,9 @@ prepare() {
   fi
 
   # Apply patches if libc++ is not used.
-  if [[ ${FORCE_LIBCXX} != yes ]]; then
-    patch -Np1 -i ../chromium-103-IWYU-content-browser.patch
-    patch -Np1 -i ../chromium-103-libstdc-media.patch
-  fi
+  #if [[ ${FORCE_LIBCXX} != yes ]]; then
+  #  patch -Np1 -i ../chromium-103-libstdc-media.patch
+  #fi
 
   # Custom or upstream patches.
   patch -Np0 -i ../chromium-102-no-opaque-pointers.patch
