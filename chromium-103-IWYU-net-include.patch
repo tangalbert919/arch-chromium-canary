@@ -1,0 +1,27 @@
+From 6b54f621bfdfb3048db07bba7b60ba9cf876b1bf Mon Sep 17 00:00:00 2001
+From: Stephan Hartmann <stha09@googlemail.com>
+Date: Tue, 10 May 2022 17:28:37 +0000
+Subject: [PATCH] IWYU: add stddef.h for offsetof in sockaddr_util_posix
+
+Bug: 957519
+Change-Id: I427e92287a6e98e6e55fd55009b2014cde962221
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/3637775
+Commit-Queue: Stephan Hartmann <stha09@googlemail.com>
+Reviewed-by: David Benjamin <davidben@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1001574}
+---
+ net/base/sockaddr_util_posix.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/net/base/sockaddr_util_posix.cc b/net/base/sockaddr_util_posix.cc
+index 80146c7bfd851..31ea836144898 100644
+--- a/net/base/sockaddr_util_posix.cc
++++ b/net/base/sockaddr_util_posix.cc
+@@ -4,6 +4,7 @@
+ 
+ #include "net/base/sockaddr_util_posix.h"
+ 
++#include <stddef.h>
+ #include <string.h>
+ 
+ #include <sys/socket.h>
