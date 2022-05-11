@@ -111,7 +111,7 @@ prepare() {
 
   # Apply patches if libc++ is not used.
   if [[ ${FORCE_LIBCXX} != yes ]]; then
-    patch -Np0 -i ../chromium-103-IWYU-net-include.patch
+    patch -Np1 -i ../chromium-103-IWYU-net-include.patch
   fi
 
   # Custom or upstream patches.
