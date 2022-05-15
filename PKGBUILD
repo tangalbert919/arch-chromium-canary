@@ -31,6 +31,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         #https://github.com/stha09/chromium-patches/releases/download/chromium-102-patchset-$_gcc_patchset/chromium-102-patchset-$_gcc_patchset.tar.xz
         # Custom patches (might be from upstream)
         sql-make-VirtualCursor-standard-layout-type.patch
+        chromium-104-IWYU-gl-include.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -39,6 +40,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             #'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
             # Hash(es) for custom patches
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
+            '8e5ed26a752a40358238224b59e092acff16502d51504a21b2a9d4f6f16396bf'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -106,9 +108,9 @@ prepare() {
   fi
 
   # Apply patches if libc++ is not used.
-  #if [[ ${FORCE_LIBCXX} != yes ]]; then
-  #  patch -Np1 -i ../chromium-103-IWYU-net-include.patch
-  #fi
+  if [[ ${FORCE_LIBCXX} != yes ]]; then
+    patch -Np0 -i ../chromium-104-IWYU-gl-include.patch
+  fi
 
   # Custom or upstream patches.
   #patch -Np0 -i ../chromium-102-no-opaque-pointers.patch
