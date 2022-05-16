@@ -32,6 +32,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         # Custom patches (might be from upstream)
         sql-make-VirtualCursor-standard-layout-type.patch
         chromium-104-IWYU-gl-include.patch
+        chromium-104-IWYU-math-include.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -41,6 +42,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             # Hash(es) for custom patches
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             '8e5ed26a752a40358238224b59e092acff16502d51504a21b2a9d4f6f16396bf'
+            '3b6e1b2c68b8b2eecbab94d3433a980e8816010f10291e3522b04480a6827374'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -110,6 +112,7 @@ prepare() {
   # Apply patches if libc++ is not used.
   if [[ ${FORCE_LIBCXX} != yes ]]; then
     patch -Np0 -i ../chromium-104-IWYU-gl-include.patch
+    patch -Np1 -i ../chromium-104-IWYU-math-include.patch
   fi
 
   # Custom or upstream patches.
