@@ -22,7 +22,7 @@ optdepends=('pipewire: WebRTC desktop sharing under Wayland'
             'kdialog: needed for file dialogs in KDE'
             'org.freedesktop.secrets: password storage backend on GNOME / Xfce'
             'kwallet: for storing passwords in KWallet on KDE desktops')
-BUILDENV=(ccache)
+#BUILDENV=(ccache)
 options=('!lto')
 source=(https://commondatastorage.googleapis.com/chromium-browser-official/chromium-$pkgver.tar.xz
         chromium-launcher-$_launcher_ver.tar.gz::https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver.tar.gz
