@@ -33,6 +33,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         sql-make-VirtualCursor-standard-layout-type.patch
         chromium-102-no-opaque-pointers.patch
         chromium-104-IWYU-autofill.patch
+        chromium-104-custom-base-fix.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -43,6 +44,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             'a108edd984e42884089a5de063f9c069a936d29dd066b68c90b5dac6529a8d05'
             '38b9321c02ac307887f8b190e990d63a6cd60d81c872148d2ad8ce66f5ec0e66'
+            'e959a2a9dd1138444410968208adfc479f040e1fbd75a259945b8b12d5cfbab1'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -116,6 +118,7 @@ prepare() {
 
   # Custom or upstream patches.
   patch -Np0 -i ../chromium-102-no-opaque-pointers.patch
+  patch -Np0 -i ../chromium-104-custom-base-fix.patch
 
   # Alternative to removing the orchestrator.
   touch third_party/blink/tools/merge_web_test_results.pydeps
