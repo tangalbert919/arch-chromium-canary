@@ -60,7 +60,7 @@ declare -gA _system_libs=(
   [libxml]=libxml2
   [libxslt]=libxslt
   [opus]=opus
-  [zlib]=minizip
+  #[zlib]=minizip
 )
 
 # Unbundle only without libc++, as libc++ is not fully ABI compatible with libstdc++
