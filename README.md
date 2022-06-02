@@ -18,6 +18,10 @@ To use Google's Clang instead of system Clang, run this command:
 
 `FORCE_LIBCXX=yes` and `GOOGLE_CLANG=yes` can both be passed before `makepkg`.
 
+To use ccache, run this command:
+
+`USE_CCACHE=yes makepkg -si`
+
 ## Developer info:
 
 To update the Chromium version to build, you can either edit the PKGBUILD file or run this command:
