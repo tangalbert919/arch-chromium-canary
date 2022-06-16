@@ -34,6 +34,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         # Custom patches (might be from upstream)
         sql-make-VirtualCursor-standard-layout-type.patch
         chromium-102-no-opaque-pointers.patch
+        chromium-105-IWYU-limits.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -43,6 +44,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             # Hash(es) for custom patches
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             'a108edd984e42884089a5de063f9c069a936d29dd066b68c90b5dac6529a8d05'
+            '7c83850206fe64b1a7a0c6ad0a581e7d5582e64648408231c8aa43b5a9510daa'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -110,9 +112,9 @@ prepare() {
   fi
 
   # Apply patches if libc++ is not used.
-  #if [[ ${FORCE_LIBCXX} != yes ]]; then
-  #  patch -Np0 -i ../chromium-104-IWYU-autofill.patch
-  #fi
+  if [[ ${FORCE_LIBCXX} != yes ]]; then
+    patch -Np0 -i ../chromium-105-IWYU-limits.patch
+  fi
 
   # Custom or upstream patches.
   patch -Np0 -i ../chromium-102-no-opaque-pointers.patch
