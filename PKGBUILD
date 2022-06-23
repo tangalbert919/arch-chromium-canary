@@ -123,7 +123,7 @@ prepare() {
   fi
 
   # Custom or upstream patches.
-  patch -Np0 -i ../chromium-102-no-opaque-pointers.patch
+  #patch -Np0 -i ../chromium-102-no-opaque-pointers.patch
 
   # Alternative to removing the orchestrator.
   touch third_party/blink/tools/merge_web_test_results.pydeps
