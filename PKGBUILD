@@ -39,6 +39,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         chromium-105-gcc-webid.patch
         chromium-105-IWYU-wtf.patch
         chromium-105-IWYU-ui.patch
+        chromium-105-libstdc-prtime.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -52,7 +53,8 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             '359a7633de2fa96883d1ae1214de2f07d9af80ac82650db02714bf853a9904b9'
             'ca0b9fc41e5aa7369159a534157e6a73f751616a1ed4acfd7c15899728cb0204' 
             'e376331e8d8af5a036adf6393812cba32a2282e5da5798896f037ded6fe11004'
-            '18425580f57c2edac3ce90b21c8e6346abc689d9194d08a75cec8ea13f9b4b58' 
+            '18425580f57c2edac3ce90b21c8e6346abc689d9194d08a75cec8ea13f9b4b58'
+            '8ee455c27acbfbe2fc800c396dcdde315725d3b1ebba9751fb8a6e7d23e8d58a'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -126,6 +128,7 @@ prepare() {
     patch -Np0 -i ../chromium-105-gcc-webid.patch
     patch -Np0 -i ../chromium-105-IWYU-wtf.patch
     patch -Np0 -i ../chromium-105-IWYU-ui.patch
+    patch -Np0 -i ../chromium-105-libstdc-prtime.patch
   fi
 
   # Custom or upstream patches.
