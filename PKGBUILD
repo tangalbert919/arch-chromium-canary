@@ -36,6 +36,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         chromium-102-no-opaque-pointers.patch
         chromium-105-IWYU-memory.patch
         chromium-105-IWYU-ui.patch
+        chromium-105-IWYU-webrtc.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -47,6 +48,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             'a108edd984e42884089a5de063f9c069a936d29dd066b68c90b5dac6529a8d05'
             '359a7633de2fa96883d1ae1214de2f07d9af80ac82650db02714bf853a9904b9'
             '18425580f57c2edac3ce90b21c8e6346abc689d9194d08a75cec8ea13f9b4b58'
+            'd53018d42f39afa154a74565b88e262bce16656c70ad675601d6d9840b6ffd93'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -116,6 +118,7 @@ prepare() {
   # Apply patches if libc++ is not used.
   if [[ ${FORCE_LIBCXX} != yes ]]; then
     patch -Np0 -i ../chromium-105-IWYU-memory.patch
+    patch -Np0 -i ../chromium-105-IWYU-webrtc.patch
     # Remove on version 105.0.5153.0
     patch -Np0 -i ../chromium-105-IWYU-ui.patch
   fi

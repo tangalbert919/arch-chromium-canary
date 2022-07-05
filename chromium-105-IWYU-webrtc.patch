@@ -1,0 +1,20 @@
+--- third_party/webrtc/modules/audio_processing/aec3/render_delay_buffer.cc.orig	2022-07-04 22:39:45.438443800 -0500
++++ third_party/webrtc/modules/audio_processing/aec3/render_delay_buffer.cc	2022-07-04 22:50:52.562886300 -0500
+@@ -13,6 +13,7 @@
+ #include <string.h>
+ 
+ #include <algorithm>
++#include <atomic>
+ #include <cmath>
+ #include <memory>
+ #include <numeric>
+--- third_party/webrtc/modules/audio_processing/aec3/render_delay_controller.cc.orig	2022-07-04 22:37:14.364590900 -0500
++++ third_party/webrtc/modules/audio_processing/aec3/render_delay_controller.cc	2022-07-04 22:50:38.761535300 -0500
+@@ -12,6 +12,7 @@
+ #include <stddef.h>
+ 
+ #include <algorithm>
++#include <atomic>
+ #include <memory>
+ 
+ #include "absl/types/optional.h"
