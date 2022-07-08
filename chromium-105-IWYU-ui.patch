@@ -1,0 +1,10 @@
+--- ui/gl/gl_display.h.orig	2022-06-24 23:16:22.116106400 -0500
++++ ui/gl/gl_display.h	2022-06-24 23:16:33.957540800 -0500
+@@ -8,6 +8,7 @@
+ #include <stdint.h>
+ 
+ #include <memory>
++#include <vector>
+ 
+ #include "ui/gl/gl_export.h"
+ 
