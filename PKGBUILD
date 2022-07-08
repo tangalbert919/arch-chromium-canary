@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=105.0.5152.0
+pkgver=105.0.5153.0
 pkgrel=1
 _launcher_ver=8
 _gcc_patchset=1
@@ -37,6 +37,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         chromium-105-IWYU-memory.patch
         chromium-105-IWYU-ui.patch
         chromium-105-IWYU-webrtc.patch
+        chromium-105-IWYU-vector.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -49,6 +50,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             '359a7633de2fa96883d1ae1214de2f07d9af80ac82650db02714bf853a9904b9'
             '18425580f57c2edac3ce90b21c8e6346abc689d9194d08a75cec8ea13f9b4b58'
             'd53018d42f39afa154a74565b88e262bce16656c70ad675601d6d9840b6ffd93'
+            '8be9d7ea2b881b97f426c6618ba2d5b3a14366a3edfb85065e2bf3f7efd1336b'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -121,6 +123,7 @@ prepare() {
     patch -Np0 -i ../chromium-105-IWYU-webrtc.patch
     # Remove on version 105.0.5153.0
     patch -Np0 -i ../chromium-105-IWYU-ui.patch
+    patch -Np0 -i ../chromium-105-IWYU-vector.patch
   fi
 
   # Custom or upstream patches.
