@@ -1,0 +1,10 @@
+--- base/memory/raw_ptr.h.orig	2022-07-11 17:16:54.050492100 -0500
++++ base/memory/raw_ptr.h	2022-07-11 17:17:00.914680200 -0500
+@@ -5,6 +5,7 @@
+ #ifndef BASE_MEMORY_RAW_PTR_H_
+ #define BASE_MEMORY_RAW_PTR_H_
+ 
++#include <limits.h>
+ #include <stddef.h>
+ #include <stdint.h>
+ 
