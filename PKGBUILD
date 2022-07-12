@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=105.0.5168.0
+pkgver=105.0.5171.0
 pkgrel=1
 _launcher_ver=8
 _gcc_patchset=1
@@ -34,7 +34,6 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         # Custom patches (might be from upstream)
         sql-make-VirtualCursor-standard-layout-type.patch
         chromium-102-no-opaque-pointers.patch
-        chromium-105-IWYU-memory.patch
         chromium-105-IWYU-webrtc.patch
         chromium-105-IWYU-vector.patch
         chromium-105-IWYU-limits.patch
@@ -47,7 +46,6 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             # Hash(es) for custom patches
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             'a108edd984e42884089a5de063f9c069a936d29dd066b68c90b5dac6529a8d05'
-            '359a7633de2fa96883d1ae1214de2f07d9af80ac82650db02714bf853a9904b9'
             'd53018d42f39afa154a74565b88e262bce16656c70ad675601d6d9840b6ffd93'
             '8be9d7ea2b881b97f426c6618ba2d5b3a14366a3edfb85065e2bf3f7efd1336b'
             '774f1cbd7a44036dbff78760c2768010cf485caa71d0d2b1fb8239ccdbd229c7'
@@ -119,7 +117,6 @@ prepare() {
 
   # Apply patches if libc++ is not used.
   if [[ ${FORCE_LIBCXX} != yes ]]; then
-    patch -Np0 -i ../chromium-105-IWYU-memory.patch
     patch -Np0 -i ../chromium-105-IWYU-webrtc.patch
     patch -Np0 -i ../chromium-105-IWYU-vector.patch
     patch -Np0 -i ../chromium-105-IWYU-limits.patch
