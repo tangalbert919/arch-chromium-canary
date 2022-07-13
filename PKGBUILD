@@ -125,11 +125,6 @@ prepare() {
   # Custom or upstream patches.
   #patch -Np0 -i ../chromium-102-no-opaque-pointers.patch
 
-  # Alternative to removing the orchestrator.
-  touch third_party/blink/tools/merge_web_test_results.pydeps
-  mkdir -p third_party/blink/tools/blinkpy/web_tests
-  touch third_party/blink/tools/blinkpy/web_tests/merge_results.pydeps
-
   mkdir -p third_party/node/linux/node-linux-x64/bin
   ln -sf /usr/bin/node third_party/node/linux/node-linux-x64/bin/
   ln -s /usr/bin/java third_party/jdk/current/bin/
