@@ -34,6 +34,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         # Custom patches (might be from upstream)
         sql-make-VirtualCursor-standard-layout-type.patch
         chromium-102-no-opaque-pointers.patch
+        chromium-104-zlib.patch
         chromium-105-IWYU-vector.patch
         )
 
@@ -44,6 +45,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             # Hash(es) for custom patches
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             'a108edd984e42884089a5de063f9c069a936d29dd066b68c90b5dac6529a8d05'
+            '1e0faf0b5d843aaa39a211d83c9755160364186067fcd9db63923e6ba1ac3cd2'
             '8be9d7ea2b881b97f426c6618ba2d5b3a14366a3edfb85065e2bf3f7efd1336b'
             )
 
@@ -64,7 +66,7 @@ declare -gA _system_libs=(
   [libxml]=libxml2
   [libxslt]=libxslt
   [opus]=opus
-  #[zlib]=minizip
+  [zlib]=minizip
 )
 
 # Unbundle only without libc++, as libc++ is not fully ABI compatible with libstdc++
@@ -118,6 +120,7 @@ prepare() {
 
   # Custom or upstream patches.
   #patch -Np0 -i ../chromium-102-no-opaque-pointers.patch
+  patch -Np0 -i ../chromium-104-zlib.patch
 
   mkdir -p third_party/node/linux/node-linux-x64/bin
   ln -sf /usr/bin/node third_party/node/linux/node-linux-x64/bin/
