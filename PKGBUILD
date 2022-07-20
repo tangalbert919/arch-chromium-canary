@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=105.0.5187.0
+pkgver=105.0.5189.0
 pkgrel=1
 _launcher_ver=8
 _gcc_patchset=1
@@ -36,7 +36,6 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         chromium-102-no-opaque-pointers.patch
         chromium-104-zlib.patch
         chromium-105-IWYU-vector.patch
-        chromium-105-libstdc-cmath.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -48,7 +47,6 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             'a108edd984e42884089a5de063f9c069a936d29dd066b68c90b5dac6529a8d05'
             '1e0faf0b5d843aaa39a211d83c9755160364186067fcd9db63923e6ba1ac3cd2'
             '8be9d7ea2b881b97f426c6618ba2d5b3a14366a3edfb85065e2bf3f7efd1336b'
-            '8f329ae3827b6bbe00ecc35a7ce0d35c116aa0d620a115e00cea703bf514cead'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -118,7 +116,6 @@ prepare() {
   # Apply patches if libc++ is not used.
   if [[ ${FORCE_LIBCXX} != yes ]]; then
     patch -Np0 -i ../chromium-105-IWYU-vector.patch
-    patch -Np0 -i ../chromium-105-libstdc-cmath.patch
   fi
 
   # Custom or upstream patches.
