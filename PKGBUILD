@@ -38,6 +38,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         chromium-105-IWYU-vector.patch
         chromium-106-IWYU-dawn.patch
         roll-src-third_party-ffmpeg.patch
+        roll-src-third_party-ffmpeg-2.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -51,6 +52,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             '8be9d7ea2b881b97f426c6618ba2d5b3a14366a3edfb85065e2bf3f7efd1336b'
             'b821d79391e7a9c5ec1a187bf9dc1e978a8e506dfe15b5cb80b5cd7b85d64091'
             '30df59a9e2d95dcb720357ec4a83d9be51e59cc5551365da4c0073e68ccdec44'
+            'e4e75951ceec1bbcef1d21d72993a06ab9ede5e6a2807cae544777af5bb065c8'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -127,6 +129,7 @@ prepare() {
   #patch -Np0 -i ../chromium-102-no-opaque-pointers.patch
   patch -Np0 -i ../chromium-104-zlib.patch
   patch -Rp1 -i ../roll-src-third_party-ffmpeg.patch
+  patch -Rp1 -i ../roll-src-third_party-ffmpeg-2.patch
 
   mkdir -p third_party/node/linux/node-linux-x64/bin
   ln -sf /usr/bin/node third_party/node/linux/node-linux-x64/bin/
