@@ -36,6 +36,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         chromium-102-no-opaque-pointers.patch
         chromium-104-zlib.patch
         chromium-105-IWYU-vector.patch
+        chromium-106-IWYU-dawn.patch
         roll-src-third_party-ffmpeg.patch
         )
 
@@ -48,6 +49,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             'a108edd984e42884089a5de063f9c069a936d29dd066b68c90b5dac6529a8d05'
             '1e0faf0b5d843aaa39a211d83c9755160364186067fcd9db63923e6ba1ac3cd2'
             '8be9d7ea2b881b97f426c6618ba2d5b3a14366a3edfb85065e2bf3f7efd1336b'
+            'b821d79391e7a9c5ec1a187bf9dc1e978a8e506dfe15b5cb80b5cd7b85d64091'
             '30df59a9e2d95dcb720357ec4a83d9be51e59cc5551365da4c0073e68ccdec44'
             )
 
@@ -118,6 +120,7 @@ prepare() {
   # Apply patches if libc++ is not used.
   if [[ ${FORCE_LIBCXX} != yes ]]; then
     patch -Np0 -i ../chromium-105-IWYU-vector.patch
+    patch -Np0 -i ../chromium-106-IWYU-dawn.patch
   fi
 
   # Custom or upstream patches.

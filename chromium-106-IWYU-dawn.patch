@@ -1,0 +1,10 @@
+--- third_party/dawn/src/dawn/native/Blob.h.orig	2022-07-29 22:42:50.976363900 -0500
++++ third_party/dawn/src/dawn/native/Blob.h	2022-07-29 22:43:10.086859300 -0500
+@@ -15,6 +15,7 @@
+ #ifndef SRC_DAWN_NATIVE_BLOB_H_
+ #define SRC_DAWN_NATIVE_BLOB_H_
+ 
++#include <cstdint>
+ #include <functional>
+ #include <type_traits>
+ #include <utility>
