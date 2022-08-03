@@ -33,7 +33,6 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         #https://github.com/stha09/chromium-patches/releases/download/chromium-102-patchset-$_gcc_patchset/chromium-102-patchset-$_gcc_patchset.tar.xz
         # Custom patches (might be from upstream)
         sql-make-VirtualCursor-standard-layout-type.patch
-        chromium-102-no-opaque-pointers.patch
         chromium-104-zlib.patch
         chromium-105-IWYU-vector.patch
         roll-src-third_party-ffmpeg.patch
@@ -46,7 +45,6 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             #'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
             # Hash(es) for custom patches
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
-            'a108edd984e42884089a5de063f9c069a936d29dd066b68c90b5dac6529a8d05'
             '1e0faf0b5d843aaa39a211d83c9755160364186067fcd9db63923e6ba1ac3cd2'
             '8be9d7ea2b881b97f426c6618ba2d5b3a14366a3edfb85065e2bf3f7efd1336b'
             '30df59a9e2d95dcb720357ec4a83d9be51e59cc5551365da4c0073e68ccdec44'
@@ -123,7 +121,6 @@ prepare() {
   fi
 
   # Custom or upstream patches.
-  #patch -Np0 -i ../chromium-102-no-opaque-pointers.patch
   patch -Np0 -i ../chromium-104-zlib.patch
   patch -Rp1 -i ../roll-src-third_party-ffmpeg.patch
   patch -Rp1 -i ../roll-src-third_party-ffmpeg-2.patch
