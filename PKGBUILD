@@ -120,7 +120,7 @@ prepare() {
   # Apply patches if libc++ is not used.
   if [[ ${FORCE_LIBCXX} != yes ]]; then
     patch -Np0 -i ../chromium-105-IWYU-vector.patch
-    patch -Np0 -i ../chromium-106-IWYU-atomic.patch
+    #patch -Np0 -i ../chromium-106-IWYU-atomic.patch
   fi
 
   # Custom or upstream patches.
