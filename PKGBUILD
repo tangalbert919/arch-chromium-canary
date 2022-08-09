@@ -121,7 +121,7 @@ prepare() {
   fi
 
   # Custom or upstream patches.
-  patch -Np0 -i ../chromium-104-zlib.patch
+  #patch -Np0 -i ../chromium-104-zlib.patch
   patch -Rp1 -i ../roll-src-third_party-ffmpeg.patch
   patch -Rp1 -i ../roll-src-third_party-ffmpeg-2.patch
 
