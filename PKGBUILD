@@ -35,6 +35,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         sql-make-VirtualCursor-standard-layout-type.patch
         chromium-104-zlib.patch
         chromium-105-IWYU-vector.patch
+        chromium-106-IWYU-algorithm.patch
         roll-src-third_party-ffmpeg.patch
         roll-src-third_party-ffmpeg-2.patch
         )
@@ -47,6 +48,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             '1e0faf0b5d843aaa39a211d83c9755160364186067fcd9db63923e6ba1ac3cd2'
             '8be9d7ea2b881b97f426c6618ba2d5b3a14366a3edfb85065e2bf3f7efd1336b'
+            '19a51cd61e79f9d6590c913f3ed92d82268a27ffab842950889a7e560012492f'
             '30df59a9e2d95dcb720357ec4a83d9be51e59cc5551365da4c0073e68ccdec44'
             'e4e75951ceec1bbcef1d21d72993a06ab9ede5e6a2807cae544777af5bb065c8'
             )
@@ -118,6 +120,7 @@ prepare() {
   # Apply patches if libc++ is not used.
   if [[ ${FORCE_LIBCXX} != yes ]]; then
     patch -Np0 -i ../chromium-105-IWYU-vector.patch
+    patch -Np0 -i ../chromium-106-IWYU-algorithm.patch
   fi
 
   # Custom or upstream patches.

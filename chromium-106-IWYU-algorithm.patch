@@ -1,0 +1,18 @@
+--- components/power_bookmarks/core/power_bookmark_service.cc.orig	2022-08-10 18:25:39.640293800 -0500
++++ components/power_bookmarks/core/power_bookmark_service.cc	2022-08-10 18:26:09.153056800 -0500
+@@ -2,6 +2,8 @@
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
++#include <algorithm>
++
+ #include "components/power_bookmarks/core/power_bookmark_service.h"
+ 
+ namespace power_bookmarks {
+@@ -22,4 +24,4 @@
+     data_providers_.erase(it);
+ }
+ 
+-}  // namespace power_bookmarks
+\ No newline at end of file
++}  // namespace power_bookmarks
