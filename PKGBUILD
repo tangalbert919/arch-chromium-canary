@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=106.0.5238.0
+pkgver=106.0.5247.0
 pkgrel=1
 _launcher_ver=8
 _gcc_patchset=1
@@ -34,9 +34,6 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         # Custom patches (might be from upstream)
         sql-make-VirtualCursor-standard-layout-type.patch
         chromium-104-zlib.patch
-        chromium-105-IWYU-vector.patch
-        chromium-106-IWYU-limits.patch
-        chromium-106-IWYU-tuple.patch
         chromium-106-libstdc-nullptr.patch
         roll-src-third_party-ffmpeg.patch
         roll-src-third_party-ffmpeg-2.patch
@@ -49,9 +46,6 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             # Hash(es) for custom patches
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             '1e0faf0b5d843aaa39a211d83c9755160364186067fcd9db63923e6ba1ac3cd2'
-            '8be9d7ea2b881b97f426c6618ba2d5b3a14366a3edfb85065e2bf3f7efd1336b'
-            'c25693c4b28fa767ec89ac1b10b041783c8266a4057f9035b69cb9bab44437ec'
-            '2f490ab7b06e2ebd8a00e157057b10a767d539e6d5216f257c4842806ecad50a'
             '88ce63e140ddd782d416da8b82ca3f8a88d3c7c048e4e15a763fa1de58c21e2f'
             '30df59a9e2d95dcb720357ec4a83d9be51e59cc5551365da4c0073e68ccdec44'
             'e4e75951ceec1bbcef1d21d72993a06ab9ede5e6a2807cae544777af5bb065c8'
@@ -123,9 +117,6 @@ prepare() {
 
   # Apply patches if libc++ is not used.
   if [[ ${FORCE_LIBCXX} != yes ]]; then
-    patch -Np0 -i ../chromium-105-IWYU-vector.patch
-    patch -Np2 -i ../chromium-106-IWYU-tuple.patch
-    patch -Np2 -i ../chromium-106-IWYU-limits.patch
     patch -Np2 -i ../chromium-106-libstdc-nullptr.patch
   fi
 
