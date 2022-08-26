@@ -33,8 +33,6 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         #https://github.com/stha09/chromium-patches/releases/download/chromium-102-patchset-$_gcc_patchset/chromium-102-patchset-$_gcc_patchset.tar.xz
         # Custom patches (might be from upstream)
         sql-make-VirtualCursor-standard-layout-type.patch
-        chromium-104-zlib.patch
-        chromium-106-libstdc-nullptr.patch
         roll-src-third_party-ffmpeg.patch
         roll-src-third_party-ffmpeg-2.patch
         )
@@ -45,8 +43,6 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             #'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
             # Hash(es) for custom patches
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
-            '1e0faf0b5d843aaa39a211d83c9755160364186067fcd9db63923e6ba1ac3cd2'
-            '88ce63e140ddd782d416da8b82ca3f8a88d3c7c048e4e15a763fa1de58c21e2f'
             '30df59a9e2d95dcb720357ec4a83d9be51e59cc5551365da4c0073e68ccdec44'
             'e4e75951ceec1bbcef1d21d72993a06ab9ede5e6a2807cae544777af5bb065c8'
             )
@@ -116,12 +112,11 @@ prepare() {
   fi
 
   # Apply patches if libc++ is not used.
-  if [[ ${FORCE_LIBCXX} != yes ]]; then
-    patch -Np2 -i ../chromium-106-libstdc-nullptr.patch
-  fi
+  #if [[ ${FORCE_LIBCXX} != yes ]]; then
+    #patch -Np2 -i ../chromium-106-libstdc-nullptr.patch
+  #fi
 
   # Custom or upstream patches.
-  #patch -Np0 -i ../chromium-104-zlib.patch
   patch -Rp1 -i ../roll-src-third_party-ffmpeg.patch
   patch -Rp1 -i ../roll-src-third_party-ffmpeg-2.patch
 
