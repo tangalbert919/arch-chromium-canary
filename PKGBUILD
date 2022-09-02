@@ -46,7 +46,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             '1e299869f4d3a54b7c35030aa17051aedc08f92d427c0c581b980130f0c83ad3'
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             '30df59a9e2d95dcb720357ec4a83d9be51e59cc5551365da4c0073e68ccdec44'
-            'e4e75951ceec1bbcef1d21d72993a06ab9ede5e6a2807cae544777af5bb065c8'
+            '0489b21aa99367670f64028c2e9724df10005566c5f6ae97600253885810fdf1'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py

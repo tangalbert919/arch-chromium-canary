@@ -37,19 +37,6 @@ Cr-Commit-Position: refs/heads/main@{#1029623}
  media/filters/audio_file_reader.cc | 4 ++--
  2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/DEPS b/DEPS
-index c8906abc2a0aa..98c52d56e5d23 100644
---- a/DEPS
-+++ b/DEPS
-@@ -476,7 +476,7 @@ vars = {
-   # Three lines of non-changing comments so that
-   # the commit queue can handle CLs rolling ffmpeg
-   # and whatever else without interference from each other.
--  'ffmpeg_revision': '880df5ede50a8534c8116d0d50e4bc4f3ef08a06',
-+  'ffmpeg_revision': 'b71ecd02b47939e530e620d9d0d101463db0f688',
- 
-   # If you change this, also update the libc++ revision in
-   # //buildtools/deps_revisions.gni.
 diff --git a/media/filters/audio_file_reader.cc b/media/filters/audio_file_reader.cc
 index e1be5aa9a5b13..951c003956fb5 100644
 --- a/media/filters/audio_file_reader.cc
