@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=107.0.5275.0
+pkgver=107.0.5277.0
 pkgrel=1
 _launcher_ver=8
 _gcc_patchset=1
@@ -126,6 +126,9 @@ prepare() {
   mkdir -p third_party/node/linux/node-linux-x64/bin
   ln -sf /usr/bin/node third_party/node/linux/node-linux-x64/bin/
   ln -s /usr/bin/java third_party/jdk/current/bin/
+
+  # Needed for blink
+  touch third_party/blink/tools/run_wpt_tests.pydeps
 
   # Remove bundled libraries for which we will use the system copies; this
   # *should* do what the remove_bundled_libraries.py script does, with the
