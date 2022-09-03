@@ -1,0 +1,10 @@
+--- src/chromium-107.0.5277.0/media/gpu/vaapi/vaapi_video_encode_accelerator.cc.orig	2022-09-02 23:11:12.151847700 -0500
++++ src/chromium-107.0.5277.0/media/gpu/vaapi/vaapi_video_encode_accelerator.cc	2022-09-02 23:11:21.614775900 -0500
+@@ -11,6 +11,7 @@
+ #include <memory>
+ #include <type_traits>
+ #include <utility>
++#include <variant>
+ 
+ #include "base/bind.h"
+ #include "base/bits.h"
