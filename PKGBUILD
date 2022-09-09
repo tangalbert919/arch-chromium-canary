@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=107.0.5278.0
+pkgver=107.0.5289.0
 pkgrel=1
 _launcher_ver=8
 _gcc_patchset=1
@@ -33,7 +33,6 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         #https://github.com/stha09/chromium-patches/releases/download/chromium-102-patchset-$_gcc_patchset/chromium-102-patchset-$_gcc_patchset.tar.xz
         # Custom patches (might be from upstream)
         chromium-107-clang.patch
-        chromium-107-IWYU-variant.patch
         chromium-107-libstdc-mutex.patch
         chromium-107-zlib.patch
         sql-make-VirtualCursor-standard-layout-type.patch
@@ -47,7 +46,6 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             #'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
             # Hash(es) for custom patches
             '1e299869f4d3a54b7c35030aa17051aedc08f92d427c0c581b980130f0c83ad3'
-            '26db1fea870675acdedac1fbc33f40d24083de175321570eaa14b0a8483abe2f'
             '4455a72722bf8030d9e1f8f1f29e8c9c555047174e91b6566152c20729267970'
             'd81770f651e46e970e1fb3aa4aaa283b968e9af229b27bf08da37b138920fd11'
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
@@ -122,7 +120,6 @@ prepare() {
 
   # Apply patches if libc++ is not used.
   if [[ ${FORCE_LIBCXX} != yes ]]; then
-    patch -Np2 -i ../chromium-107-IWYU-variant.patch
     patch -Np2 -i ../chromium-107-libstdc-mutex.patch
   fi
 
