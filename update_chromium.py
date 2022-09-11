@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import json, urllib.request as request, os
 
 h1 = request.urlopen('https://omahaproxy.appspot.com/all.json?os=win').read().decode('utf-8')
