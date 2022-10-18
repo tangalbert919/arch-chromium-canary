@@ -56,12 +56,17 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
 # Keys are the names in the above script; values are the dependencies in Arch
 declare -gA _system_libs=(
+  [brotli]=brotli
+  [dav1d]=dav1d
   [ffmpeg]=ffmpeg
   [flac]=flac
   [fontconfig]=fontconfig
   [freetype]=freetype2
   [harfbuzz-ng]=harfbuzz
   [icu]=icu
+  [jsoncpp]=jsoncpp
+  [libaom]=aom
+  #[libavif]=libavif  # needs https://github.com/AOMediaCodec/libavif/commit/d22d4de94120
   [libdrm]=
   [libjpeg]=libjpeg
   [libpng]=libpng
@@ -70,6 +75,7 @@ declare -gA _system_libs=(
   [libxml]=libxml2
   [libxslt]=libxslt
   [opus]=opus
+  [woff2]=woff2
   [zlib]=minizip
 )
 
