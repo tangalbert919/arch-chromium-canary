@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=109.0.5379.0
+pkgver=109.0.5381.0
 pkgrel=1
 _launcher_ver=8
 _gcc_patchset=1
@@ -233,6 +233,8 @@ build() {
     'link_pulseaudio=true'
     'use_gnome_keyring=false'
     'use_sysroot=false'
+    'use_system_libwayland_server=true'
+    'use_system_wayland_scanner=true'
     'enable_hangout_services_extension=true'
     'enable_widevine=true'
     'enable_nacl=false'
