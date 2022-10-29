@@ -1,0 +1,31 @@
+From a120a43e25b297221b31158bc862ca3d618eb7dd Mon Sep 17 00:00:00 2001
+From: Stephan Hartmann <stha09@googlemail.com>
+Date: Mon, 10 Oct 2022 15:04:34 +0000
+Subject: [PATCH] libstdc++: use math.h for atan2f in gfx::LabToLCH
+
+libstdc++ does not implement std::atan2f. Use atan2f from math.h
+instead.
+
+Bug: 957519
+Change-Id: I38f2d22f73dcc308e7882efe76fa290674417d77
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/3941627
+Reviewed-by: Avi Drissman <avi@chromium.org>
+Commit-Queue: Avi Drissman <avi@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1056962}
+---
+ ui/gfx/color_conversions.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ui/gfx/color_conversions.cc b/ui/gfx/color_conversions.cc
+index fc2eff30b5499..34a032ffdcf27 100644
+--- a/ui/gfx/color_conversions.cc
++++ b/ui/gfx/color_conversions.cc
+@@ -180,7 +180,7 @@ std::tuple<float, float, float> LchToLab(float l,
+ }
+ std::tuple<float, float, float> LabToLCH(float l, float a, float b) {
+   return std::make_tuple(l, std::sqrt(a * a + b * b),
+-                         gfx::RadToDeg(std::atan2f(b, a)));
++                         gfx::RadToDeg(atan2f(b, a)));
+ }
+ 
+ std::tuple<float, float, float> LabToXYZD50(float l, float a, float b) {

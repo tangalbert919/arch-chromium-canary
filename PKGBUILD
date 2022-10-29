@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=108.0.5336.0
+pkgver=108.0.5340.0
 pkgrel=1
 _launcher_ver=8
 _gcc_patchset=1
@@ -35,6 +35,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         chromium-107-clang.patch
         chromium-107-libstdc-mutex.patch
         chromium-107-zlib.patch
+        chromium-108-libstdc-math.patch
         sql-make-VirtualCursor-standard-layout-type.patch
         roll-src-third_party-ffmpeg.patch
         roll-src-third_party-ffmpeg-2.patch
@@ -48,6 +49,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             '1e299869f4d3a54b7c35030aa17051aedc08f92d427c0c581b980130f0c83ad3'
             '4455a72722bf8030d9e1f8f1f29e8c9c555047174e91b6566152c20729267970'
             'd81770f651e46e970e1fb3aa4aaa283b968e9af229b27bf08da37b138920fd11'
+            'baf2d5c3dc8f33cab75ec43eda60cf8c139eb2a3e6b4a85efc40a28b5c1dc784'
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             '30df59a9e2d95dcb720357ec4a83d9be51e59cc5551365da4c0073e68ccdec44'
             '0489b21aa99367670f64028c2e9724df10005566c5f6ae97600253885810fdf1'
@@ -121,6 +123,7 @@ prepare() {
   # Apply patches if libc++ is not used.
   if [[ ${FORCE_LIBCXX} != yes ]]; then
     patch -Np2 -i ../chromium-107-libstdc-mutex.patch
+    patch -Np1 -i ../chromium-108-libstdc-math.patch
   fi
 
   # Custom or upstream patches.
