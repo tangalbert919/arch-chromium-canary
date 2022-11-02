@@ -228,8 +228,6 @@ build() {
     'link_pulseaudio=true'
     'use_gnome_keyring=false'
     'use_sysroot=false'
-    'use_system_libwayland_server=true'
-    'use_system_wayland_scanner=true'
     'enable_hangout_services_extension=true'
     'enable_widevine=true'
     'enable_nacl=false'
