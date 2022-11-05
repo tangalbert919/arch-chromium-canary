@@ -33,6 +33,8 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         #https://github.com/stha09/chromium-patches/releases/download/chromium-102-patchset-$_gcc_patchset/chromium-102-patchset-$_gcc_patchset.tar.xz
         # Custom patches (might be from upstream)
         chromium-107-clang.patch
+        chromium-109-gcc-bluetooth.patch
+        chromium-109-gcc-blink.patch
         sql-make-VirtualCursor-standard-layout-type.patch
         roll-src-third_party-ffmpeg.patch
         roll-src-third_party-ffmpeg-2.patch
@@ -44,6 +46,8 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             #'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
             # Hash(es) for custom patches
             '1e299869f4d3a54b7c35030aa17051aedc08f92d427c0c581b980130f0c83ad3'
+            'beb8ab5189d533a3ded622b0724a67262286629fed7310ed2448557a42181147'
+            'ca35dd3814c890c78fc38c05d586c831b06e2e804d13399007e50992ae0550f6'
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             '30df59a9e2d95dcb720357ec4a83d9be51e59cc5551365da4c0073e68ccdec44'
             '0489b21aa99367670f64028c2e9724df10005566c5f6ae97600253885810fdf1'
@@ -71,7 +75,7 @@ declare -gA _system_libs=(
   [libxml]=libxml2
   [libxslt]=libxslt
   [opus]=opus
-  [woff2]=woff2
+  #[woff2]=woff2
   [zlib]=minizip
 )
 
@@ -124,6 +128,10 @@ prepare() {
   #if [[ ${FORCE_LIBCXX} != yes ]]; then
     #patch -Np2 -i ../chromium-107-libstdc-mutex.patch
   #fi
+
+  # Apply patches if GCC is used.
+  patch -Np1 -i ../chromium-109-gcc-bluetooth.patch
+  patch -Np1 -i ../chromium-109-gcc-blink.patch
 
   # Custom or upstream patches.
   patch -Rp1 -i ../roll-src-third_party-ffmpeg.patch
