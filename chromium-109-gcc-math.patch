@@ -1,0 +1,10 @@
+--- src/chromium-109.0.5402.0/media/base/vector_math.cc.orig	2022-11-05 17:32:24.091111300 -0500
++++ src/chromium-109.0.5402.0/media/base/vector_math.cc	2022-11-05 17:32:34.732633300 -0500
+@@ -6,6 +6,7 @@
+ #include "media/base/vector_math_testing.h"
+ 
+ #include <algorithm>
++#include <cmath>
+ 
+ #include "base/check_op.h"
+ #include "base/cpu.h"

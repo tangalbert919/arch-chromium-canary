@@ -1,0 +1,10 @@
+--- src/chromium-109.0.5402.0/ui/wm/core/shadow_controller.h.orig	2022-11-05 19:14:02.165426900 -0500
++++ src/chromium-109.0.5402.0/ui/wm/core/shadow_controller.h	2022-11-05 19:14:07.336954100 -0500
+@@ -6,6 +6,7 @@
+ #define UI_WM_CORE_SHADOW_CONTROLLER_H_
+ 
+ #include <map>
++#include <memory>
+ 
+ #include "base/component_export.h"
+ #include "base/memory/raw_ptr.h"
