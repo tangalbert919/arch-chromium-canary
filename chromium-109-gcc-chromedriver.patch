@@ -1,0 +1,10 @@
+--- src/chromium-109.0.5402.0/chrome/test/chromedriver/session.cc.orig	2022-11-05 18:23:27.294051700 -0500
++++ src/chromium-109.0.5402.0/chrome/test/chromedriver/session.cc	2022-11-05 18:23:34.895999100 -0500
+@@ -4,6 +4,7 @@
+ 
+ #include "chrome/test/chromedriver/session.h"
+ 
++#include <cstring>
+ #include <list>
+ #include <utility>
+ 

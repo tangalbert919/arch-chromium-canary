@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=109.0.5396.0
+pkgver=109.0.5402.0
 pkgrel=1
 _launcher_ver=8
 _gcc_patchset=1
@@ -34,7 +34,10 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         # Custom patches (might be from upstream)
         chromium-107-clang.patch
         chromium-109-gcc-bluetooth.patch
-        chromium-109-gcc-blink.patch
+        chromium-109-gcc-chromedriver.patch
+        chromium-109-gcc-math.patch
+        chromium-109-IWYU-memory.patch
+        chromium-109-libstdc-anchor.patch
         sql-make-VirtualCursor-standard-layout-type.patch
         roll-src-third_party-ffmpeg.patch
         roll-src-third_party-ffmpeg-2.patch
@@ -47,7 +50,10 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             # Hash(es) for custom patches
             '1e299869f4d3a54b7c35030aa17051aedc08f92d427c0c581b980130f0c83ad3'
             'beb8ab5189d533a3ded622b0724a67262286629fed7310ed2448557a42181147'
-            'ca35dd3814c890c78fc38c05d586c831b06e2e804d13399007e50992ae0550f6'
+            'a393e4d01b7e9b7510b3b4f7a20df3447d6138320e0e2a2c116e77981568067a'
+            '7b8dea744844abfcd74ea59915775fc9f15d97054d3e2686beca4a9295778ebe'
+            'e934c1e487b9e86054ae995c17aba582ad4b674320a109ccb19182c609ac37c7'
+            '71764b227ec7812bde25f508ecefc129780bb84476f89e9c8dbb7039bfc1556d'
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             '30df59a9e2d95dcb720357ec4a83d9be51e59cc5551365da4c0073e68ccdec44'
             '0489b21aa99367670f64028c2e9724df10005566c5f6ae97600253885810fdf1'
@@ -125,13 +131,16 @@ prepare() {
   fi
 
   # Apply patches if libc++ is not used.
-  #if [[ ${FORCE_LIBCXX} != yes ]]; then
-    #patch -Np2 -i ../chromium-107-libstdc-mutex.patch
-  #fi
+  if [[ ${FORCE_LIBCXX} != yes ]]; then
+    patch -Np2 -i ../chromium-107-libstdc-anchor.patch
+    patch -Np2 -i ../chromium-109-IWYU-memory.patch
+
+  fi
 
   # Apply patches if GCC is used.
   patch -Np1 -i ../chromium-109-gcc-bluetooth.patch
-  patch -Np1 -i ../chromium-109-gcc-blink.patch
+  patch -Np2 -i ../chromium-109-gcc-chromedriver.patch
+  patch -Np2 -i ../chromium-109-gcc-math.patch
 
   # Custom or upstream patches.
   patch -Rp1 -i ../roll-src-third_party-ffmpeg.patch
