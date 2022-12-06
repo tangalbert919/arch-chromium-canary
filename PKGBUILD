@@ -210,8 +210,8 @@ build() {
     export CXX="${_clang_path}clang++"
     export AR="${_clang_path}llvm-ar"
   else
-    export CC=gcc
-    export CXX=g++
+    export CC=clang
+    export CXX=clang++
     export AR=ar
   fi
   export NM=nm
@@ -245,8 +245,7 @@ build() {
 
   # PGO profiles cannot be read with system Clang.
   if [[ ${GOOGLE_CLANG} != yes ]]; then
-    _flags+=('chrome_pgo_phase=0'
-             'is_clang=false')
+    _flags+=('chrome_pgo_phase=0')
   fi
 
   if [[ -n ${_system_libs[icu]+set} ]]; then
