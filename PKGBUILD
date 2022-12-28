@@ -76,12 +76,12 @@ declare -gA _system_libs=(
 )
 
 # Unbundle only without libc++, as libc++ is not fully ABI compatible with libstdc++
-if [[ ${FORCE_LIBCXX} != yes ]]; then
-  _system_libs+=(
-    [re2]=re2
-    [snappy]=snappy
-  )
-fi
+#if [[ ${FORCE_LIBCXX} != yes ]]; then
+  #_system_libs+=(
+  #  [re2]=re2
+  #  [snappy]=snappy
+  #)
+#fi
 
 _unwanted_bundled_libs=(
   $(printf "%s\n" ${!_system_libs[@]} | sed 's/^libjpeg$/&_turbo/')
@@ -252,11 +252,11 @@ build() {
     _flags+=('icu_use_data_file=false')
   fi
 
-  if [[ ${FORCE_LIBCXX} == yes ]]; then
-    _flags+=('use_custom_libcxx=true')
-  else
-    _flags+=('use_custom_libcxx=false')
-  fi
+  #if [[ ${FORCE_LIBCXX} == yes ]]; then
+  _flags+=('use_custom_libcxx=true')
+  #else
+  #  _flags+=('use_custom_libcxx=false')
+  #fi
 
   # Taken from chromium-dev
   if [[ -z ${_system_libs[ffmpeg]+set} ]]; then
