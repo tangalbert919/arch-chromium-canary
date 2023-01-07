@@ -8,19 +8,19 @@ Run this command to install missing dependencies before building, and then the b
 
 `makepkg -si`
 
-To use libc++ instead of libstdc++ (provided by GCC), run this command:
+<!--To use libc++ instead of libstdc++ (provided by GCC), run this command:
 
-`FORCE_LIBCXX=yes makepkg -si`
+`FORCE_LIBCXX=yes makepkg -si`-->
 
 To use Google's Clang instead of system Clang, run this command:
 
 `GOOGLE_CLANG=yes makepkg -si`
 
-`FORCE_LIBCXX=yes` and `GOOGLE_CLANG=yes` can both be passed before `makepkg`.
+<!--`FORCE_LIBCXX=yes` and `GOOGLE_CLANG=yes` can both be passed before `makepkg`.
 
 To use ccache, run this command:
 
-`USE_CCACHE=yes makepkg -si`
+`USE_CCACHE=yes makepkg -si`-->
 
 ## Developer info:
 
