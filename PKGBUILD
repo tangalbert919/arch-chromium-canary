@@ -33,6 +33,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         #https://github.com/stha09/chromium-patches/releases/download/chromium-102-patchset-$_gcc_patchset/chromium-102-patchset-$_gcc_patchset.tar.xz
         # Custom patches (might be from upstream)
         chromium-107-clang.patch
+        chromium-111-IWYU.patch
         sql-make-VirtualCursor-standard-layout-type.patch
         roll-src-third_party-ffmpeg.patch
         roll-src-third_party-ffmpeg-2.patch
@@ -44,6 +45,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             #'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
             # Hash(es) for custom patches
             '1e299869f4d3a54b7c35030aa17051aedc08f92d427c0c581b980130f0c83ad3'
+            '5ddb69c82ff158e27d07e7ba3add4080eb287ea00b6821705fd129923d083b73'
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             '30df59a9e2d95dcb720357ec4a83d9be51e59cc5551365da4c0073e68ccdec44'
             '0489b21aa99367670f64028c2e9724df10005566c5f6ae97600253885810fdf1'
@@ -76,12 +78,12 @@ declare -gA _system_libs=(
 )
 
 # Unbundle only without libc++, as libc++ is not fully ABI compatible with libstdc++
-#if [[ ${FORCE_LIBCXX} != yes ]]; then
-  #_system_libs+=(
-  #  [re2]=re2
-  #  [snappy]=snappy
-  #)
-#fi
+if [[ ${FORCE_LIBCXX} != yes ]]; then
+  _system_libs+=(
+    [re2]=re2
+    [snappy]=snappy
+  )
+fi
 
 _unwanted_bundled_libs=(
   $(printf "%s\n" ${!_system_libs[@]} | sed 's/^libjpeg$/&_turbo/')
@@ -121,9 +123,9 @@ prepare() {
   fi
 
   # Apply patches if libc++ is not used.
-  #if [[ ${FORCE_LIBCXX} != yes ]]; then
-    #patch -Np2 -i ../chromium-109-libstdc-anchor.patch
-  #fi
+  if [[ ${FORCE_LIBCXX} != yes ]]; then
+    patch -Np0 -i ../chromium-111-IWYU.patch
+  fi
 
   # Apply patches if GCC is used.
   #patch -Np2 -i ../chromium-109-gcc-math.patch
@@ -252,11 +254,11 @@ build() {
     _flags+=('icu_use_data_file=false')
   fi
 
-  #if [[ ${FORCE_LIBCXX} == yes ]]; then
-  _flags+=('use_custom_libcxx=true')
-  #else
-  #  _flags+=('use_custom_libcxx=false')
-  #fi
+  if [[ ${FORCE_LIBCXX} == yes ]]; then
+    _flags+=('use_custom_libcxx=true')
+  else
+    _flags+=('use_custom_libcxx=false')
+  fi
 
   # Taken from chromium-dev
   if [[ -z ${_system_libs[ffmpeg]+set} ]]; then
