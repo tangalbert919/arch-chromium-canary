@@ -14,7 +14,7 @@ url="https://www.chromium.org/Home"
 license=('BSD')
 depends=('gtk3' 'nss' 'alsa-lib' 'xdg-utils' 'libxss' 'libcups' 'libgcrypt'
          'ttf-liberation' 'systemd' 'dbus' 'libpulse' 'pciutils' 'libva'
-         'desktop-file-utils' 'hicolor-icon-theme' 'qt5-base')
+         'desktop-file-utils' 'hicolor-icon-theme' 'qt5-base' 'libffi')
 makedepends=('python' 'gperf' 'ninja' 'nodejs' 'git'
              'pipewire' 'clang' 'lld' 'gn' 'java-runtime-headless'
              'python-setuptools')
@@ -235,10 +235,12 @@ build() {
     'enable_widevine=true'
     'enable_nacl=false'
     "google_api_key=\"${_google_api_key}\""
+    'use_system_libffi=true'
     'use_vaapi=true'
     'use_ozone=true'
     'ozone_auto_platforms=false'
     'ozone_platform_headless=true'
+    'ozone_platform_wayland=true'
     'ozone_platform_x11=true'
     'ozone_platform="x11"'
   )
