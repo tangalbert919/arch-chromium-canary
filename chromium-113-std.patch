@@ -1,0 +1,11 @@
+--- chrome/test/chromedriver/chrome/web_view_impl.cc.orig	2023-03-19 15:25:36.327032000 -0500
++++ chrome/test/chromedriver/chrome/web_view_impl.cc	2023-03-19 15:25:40.482763900 -0500
+@@ -75,7 +75,7 @@
+   if (element_id == nullptr) {
+     return absl::nullopt;
+   }
+-  static const size_t separator_length = std::strlen(kElementIdSeparator);
++  static const size_t separator_length = strlen(kElementIdSeparator);
+   const size_t separator_pos = element_id->rfind(
+       kElementIdSeparator, std::string::npos, separator_length);
+   if (separator_pos == std::string::npos) {

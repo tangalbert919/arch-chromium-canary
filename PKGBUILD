@@ -33,6 +33,8 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         #https://github.com/stha09/chromium-patches/releases/download/chromium-102-patchset-$_gcc_patchset/chromium-102-patchset-$_gcc_patchset.tar.xz
         # Custom patches (might be from upstream)
         chromium-113-clang.patch
+        chromium-113-std.patch
+        chromium-113-zlib.patch
         sql-make-VirtualCursor-standard-layout-type.patch
         roll-src-third_party-ffmpeg.patch
         roll-src-third_party-ffmpeg-2.patch
@@ -44,6 +46,8 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             #'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
             # Hash(es) for custom patches
             'cc89fa91ed9567a32b6164450c962d8cfe49b47a14dcb1c5b458470d0f32357b'
+            'a3171ba51e4f971ec99338d6755297239a5ee60dafc9460135c69ab377c55b43'
+            '4c6112e0819f674fc0f4b00a0ee12a336d0283484c34f2e82cc0e9b9800621a5'
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             '30df59a9e2d95dcb720357ec4a83d9be51e59cc5551365da4c0073e68ccdec44'
             '0489b21aa99367670f64028c2e9724df10005566c5f6ae97600253885810fdf1'
@@ -121,9 +125,10 @@ prepare() {
   fi
 
   # Apply patches if libc++ is not used.
-  #if [[ ${FORCE_LIBCXX} != yes ]]; then
-  #  patch -Np0 -i ../chromium-111-IWYU.patch
-  #fi
+  if [[ ${FORCE_LIBCXX} != yes ]]; then
+    patch -Np0 -i ../chromium-113-zlib.patch
+    patch -Np0 -i ../chromium-113-std.patch
+  fi
 
   # Apply patches if GCC is used.
   #patch -Np2 -i ../chromium-109-gcc-math.patch
