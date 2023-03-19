@@ -32,7 +32,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         #https://github.com/stha09/chromium-patches/releases/download/chromium-${pkgver%%.*}-patchset-$_gcc_patchset/chromium-${pkgver%%.*}-patchset-$_gcc_patchset.tar.xz
         #https://github.com/stha09/chromium-patches/releases/download/chromium-102-patchset-$_gcc_patchset/chromium-102-patchset-$_gcc_patchset.tar.xz
         # Custom patches (might be from upstream)
-        chromium-107-clang.patch
+        chromium-113-clang.patch
         sql-make-VirtualCursor-standard-layout-type.patch
         roll-src-third_party-ffmpeg.patch
         roll-src-third_party-ffmpeg-2.patch
@@ -43,7 +43,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             # Hash for patchset
             #'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
             # Hash(es) for custom patches
-            '1e299869f4d3a54b7c35030aa17051aedc08f92d427c0c581b980130f0c83ad3'
+            'cc89fa91ed9567a32b6164450c962d8cfe49b47a14dcb1c5b458470d0f32357b'
             'b94b2e88f63cfb7087486508b8139599c89f96d7a4181c61fec4b4e250ca327a'
             '30df59a9e2d95dcb720357ec4a83d9be51e59cc5551365da4c0073e68ccdec44'
             '0489b21aa99367670f64028c2e9724df10005566c5f6ae97600253885810fdf1'
@@ -117,7 +117,7 @@ prepare() {
   # Apply patches if Google Clang is not used.
   if [[ ${GOOGLE_CLANG} != yes ]]; then
     patch -Np1 -i ../sql-make-VirtualCursor-standard-layout-type.patch
-    patch -Rp1 -i ../chromium-107-clang.patch
+    patch -Np0 -i ../chromium-113-clang.patch
   fi
 
   # Apply patches if libc++ is not used.
