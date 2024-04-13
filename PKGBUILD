@@ -4,7 +4,7 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=chromium-canary
-pkgver=116.0.5822.0
+pkgver=125.0.6415.0
 pkgrel=1
 _launcher_ver=8
 _gcc_patchset=1
@@ -34,8 +34,6 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         # Custom patches (might be from upstream)
         chromium-113-clang.patch
         chromium-113-zlib.patch
-        roll-src-third_party-ffmpeg.patch
-        roll-src-third_party-ffmpeg-2.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -45,8 +43,6 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             # Hash(es) for custom patches
             'cc89fa91ed9567a32b6164450c962d8cfe49b47a14dcb1c5b458470d0f32357b'
             '4c6112e0819f674fc0f4b00a0ee12a336d0283484c34f2e82cc0e9b9800621a5'
-            '30df59a9e2d95dcb720357ec4a83d9be51e59cc5551365da4c0073e68ccdec44'
-            '0489b21aa99367670f64028c2e9724df10005566c5f6ae97600253885810fdf1'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -128,8 +124,8 @@ prepare() {
   #patch -Np2 -i ../chromium-109-gcc-math.patch
 
   # Custom or upstream patches.
-  patch -Rp1 -i ../roll-src-third_party-ffmpeg.patch
-  patch -Rp1 -i ../roll-src-third_party-ffmpeg-2.patch
+  #patch -Rp1 -i ../roll-src-third_party-ffmpeg.patch
+  #patch -Rp1 -i ../roll-src-third_party-ffmpeg-2.patch
 
   mkdir -p third_party/node/linux/node-linux-x64/bin
   ln -sf /usr/bin/node third_party/node/linux/node-linux-x64/bin/
