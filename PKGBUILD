@@ -14,12 +14,13 @@ url="https://www.chromium.org/Home"
 license=('BSD')
 depends=('gtk3' 'nss' 'alsa-lib' 'xdg-utils' 'libxss' 'libcups' 'libgcrypt'
          'ttf-liberation' 'systemd' 'dbus' 'libpulse' 'pciutils' 'libva'
-         'desktop-file-utils' 'hicolor-icon-theme' 'qt5-base' 'libffi')
-makedepends=('python' 'gperf' 'ninja' 'nodejs' 'git'
-             'pipewire' 'clang' 'lld' 'gn' 'java-runtime-headless'
-             'python-setuptools')
+         'desktop-file-utils' 'hicolor-icon-theme' 'libffi')
+makedepends=('python' 'gperf' 'ninja' 'nodejs' 'git' 'rust' 'qt5-base'
+             'pipewire' 'clang' 'lld' 'gn' 'java-runtime-headless')
 optdepends=('pipewire: WebRTC desktop sharing under Wayland'
             'kdialog: needed for file dialogs in KDE'
+            'qt5-base: enable Qt5 with --enable-features=AllowQt'
+            'gtk4: for --gtk-version=4 (GTK4 IME might work better on Wayland)'
             'org.freedesktop.secrets: password storage backend on GNOME / Xfce'
             'kwallet: for storing passwords in KWallet on KDE desktops')
 if [[ ${USE_CCACHE} == yes ]]; then
@@ -29,20 +30,20 @@ options=('!lto')
 source=(https://commondatastorage.googleapis.com/chromium-browser-official/chromium-$pkgver.tar.xz
         chromium-launcher-$_launcher_ver.tar.gz::https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver.tar.gz
         # Patchset
-        #https://github.com/stha09/chromium-patches/releases/download/chromium-${pkgver%%.*}-patchset-$_gcc_patchset/chromium-${pkgver%%.*}-patchset-$_gcc_patchset.tar.xz
-        #https://github.com/stha09/chromium-patches/releases/download/chromium-102-patchset-$_gcc_patchset/chromium-102-patchset-$_gcc_patchset.tar.xz
+        #https://gitlab.com/Matt.Jolly/chromium-patches/-/archive/${pkgver%%.*}/chromium-patches-${pkgver%%.*}.tar.bz2
+        https://gitlab.com/Matt.Jolly/chromium-patches/-/archive/124/chromium-patches-124.tar.bz2
         # Custom patches (might be from upstream)
-        chromium-113-clang.patch
-        chromium-113-zlib.patch
+        compiler-rt-adjust-paths.patch
+        drop-flag-unsupported-by-clang17.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
             '213e50f48b67feb4441078d50b0fd431df34323be15be97c55302d3fdac4483a'
             # Hash for patchset
-            #'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+            'c2bc4e65ed2a4e23528dd10d5c15bf99f880b7bbb789cc720d451b78098a7e12'
             # Hash(es) for custom patches
-            'cc89fa91ed9567a32b6164450c962d8cfe49b47a14dcb1c5b458470d0f32357b'
-            '4c6112e0819f674fc0f4b00a0ee12a336d0283484c34f2e82cc0e9b9800621a5'
+            'b3de01b7df227478687d7517f61a777450dca765756002c80c4915f271e2d961'
+            '3bd35dab1ded5d9e1befa10d5c6c4555fe0a76d909fb724ac57d0bf10cb666c1'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -50,32 +51,32 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
 declare -gA _system_libs=(
   [brotli]=brotli
   [dav1d]=dav1d
-  [ffmpeg]=ffmpeg
+  #[ffmpeg]=ffmpeg
   [flac]=flac
   [fontconfig]=fontconfig
   [freetype]=freetype2
   [harfbuzz-ng]=harfbuzz
   [icu]=icu
-  #[jsoncpp]=jsoncpp
   #[libaom]=aom
-  #[libavif]=libavif  # needs https://github.com/AOMediaCodec/libavif/commit/d22d4de94120
+  #[libavif]=libavif  # needs https://github.com/AOMediaCodec/libavif/commit/5410b23f76
   [libdrm]=
   [libjpeg]=libjpeg
   [libpng]=libpng
   #[libvpx]=libvpx
-  [libwebp]=libwebp
+  #[libwebp]=libwebp  # //third_party/libavif:libavif_enc needs //third_party/libwebp:libwebp_sharpyuv
   [libxml]=libxml2
   [libxslt]=libxslt
   [opus]=opus
-  #[woff2]=woff2
   [zlib]=minizip
 )
 
 # Unbundle only without libc++, as libc++ is not fully ABI compatible with libstdc++
 if [[ ${FORCE_LIBCXX} != yes ]]; then
   _system_libs+=(
-    [re2]=re2
+    [jsoncpp]=jsoncpp
+    #[re2]=re2  # //third_party/googletest:gtest_config needs //third_party/re2:re2_config
     [snappy]=snappy
+    [woff2]=woff2
   )
 fi
 
@@ -111,28 +112,26 @@ prepare() {
     third_party/maldoca/src/maldoca/ole/oss_utils.h
 
   # Apply patches if Google Clang is not used.
-  if [[ ${GOOGLE_CLANG} != yes ]]; then
-    patch -Np0 -i ../chromium-113-clang.patch
-  fi
+  #if [[ ${GOOGLE_CLANG} != yes ]]; then
+  #  patch -Np0 -i ../chromium-113-clang.patch
+  #fi
 
   # Apply patches if libc++ is not used.
   if [[ ${FORCE_LIBCXX} != yes ]]; then
-    patch -Np0 -i ../chromium-113-zlib.patch
+    patch -Np1 -i ../chromium-patches-*/chromium-117-material-color-include.patch
   fi
 
   # Apply patches if GCC is used.
   #patch -Np2 -i ../chromium-109-gcc-math.patch
 
   # Custom or upstream patches.
-  #patch -Rp1 -i ../roll-src-third_party-ffmpeg.patch
-  #patch -Rp1 -i ../roll-src-third_party-ffmpeg-2.patch
+  patch -Np1 -i ../compiler-rt-adjust-paths.patch
+  patch -Np1 -i ../drop-flag-unsupported-by-clang17.patch
 
+  # Link to system tools required by the build
   mkdir -p third_party/node/linux/node-linux-x64/bin
   ln -sf /usr/bin/node third_party/node/linux/node-linux-x64/bin/
   ln -s /usr/bin/java third_party/jdk/current/bin/
-
-  # Needed for blink
-  touch third_party/blink/tools/run_wpt_tests.pydeps
 
   # Remove bundled libraries for which we will use the system copies; this
   # *should* do what the remove_bundled_libraries.py script does, with the
@@ -152,7 +151,8 @@ prepare() {
 
   # Download Google's prebuilt Clang if needed.
   if [[ ${GOOGLE_CLANG} == yes ]]; then
-    tools/clang/scripts/update.py
+    ./tools/clang/scripts/update.py
+    ./tools/rust/update_rust.py
   fi
 
   # Use chromium-canary as brand name. Modified from chromium-dev PKGBUILD in the AUR.
@@ -204,17 +204,17 @@ build() {
     export CC="${_clang_path}clang"
     export CXX="${_clang_path}clang++"
     export AR="${_clang_path}llvm-ar"
+    export NM="${_clang_path}llvm-nm"
   else
     export CC=clang
     export CXX=clang++
     export AR=ar
+    export NM=nm
   fi
-  export NM=nm
 
   local _flags=(
     'custom_toolchain="//build/toolchain/linux/unbundle:default"'
     'host_toolchain="//build/toolchain/linux/unbundle:default"'
-    'clang_use_chrome_plugins=false'
     'is_official_build=true' # implies is_cfi=true on x86_64
     'symbol_level=0' # sufficient for backtraces on x86(_64)
     'treat_warnings_as_errors=false'
@@ -224,7 +224,6 @@ build() {
     'proprietary_codecs=true'
     'rtc_use_pipewire=true'
     'link_pulseaudio=true'
-    'use_gnome_keyring=false'
     'use_sysroot=false'
     'enable_hangout_services_extension=true'
     'enable_widevine=true'
@@ -240,9 +239,25 @@ build() {
     'ozone_platform="x11"'
   )
 
-  # PGO profiles cannot be read with system Clang.
+  # Use these settings if system Clang is used.
   if [[ ${GOOGLE_CLANG} != yes ]]; then
-    _flags+=('chrome_pgo_phase=0')
+    local _clang_version=$(
+      clang --version | grep -m1 version | sed 's/.* \([0-9]\+\).*/\1/')
+
+    _flags+=(
+      'chrome_pgo_phase=0'
+      'clang_base_path="/usr"'
+      'clang_use_chrome_plugins=false'
+      "clang_version=\"$_clang_version\"")
+    
+    # Allow the use of nightly features with stable Rust compiler
+    # https://github.com/ungoogled-software/ungoogled-chromium/pull/2696#issuecomment-1918173198
+    export RUSTC_BOOTSTRAP=1
+
+    _flags+=(
+      'rust_sysroot_absolute="/usr"'
+      "rustc_version=\"$(rustc --version)\""
+    )
   fi
 
   if [[ -n ${_system_libs[icu]+set} ]]; then
@@ -253,18 +268,6 @@ build() {
     _flags+=('use_custom_libcxx=true')
   else
     _flags+=('use_custom_libcxx=false')
-  fi
-
-  # Taken from chromium-dev
-  if [[ -z ${_system_libs[ffmpeg]+set} ]]; then
-    msg2 "Build bundled ffmpeg, compilation fails with system ffmpeg"
-    pushd third_party/ffmpeg &> /dev/null
-    chromium/scripts/build_ffmpeg.py linux x64 --branding Chrome -- \
-      --disable-asm
-
-    chromium/scripts/copy_config.sh
-    chromium/scripts/generate_gn.py
-    popd &> /dev/null
   fi
 
   # Facilitate deterministic builds (taken from build/config/compiler/BUILD.gn)
@@ -337,7 +340,8 @@ package() {
     out/Release/{chrome_{100,200}_percent,resources}.pak \
     out/Release/{v8_context_snapshot.bin,chrome_crashpad_handler} \
     out/Release/lib{EGL,GLESv2}.so \
-    out/Release/{libvk_swiftshader.so,vk_swiftshader_icd.json} \
+    out/Release/libqt5_shim.so \
+    out/Release/{libvk_swiftshader.so,libvulkan.so.1,vk_swiftshader_icd.json} \
     "$pkgdir/usr/lib/chromium-canary/"
 
   if [[ -z ${_system_libs[icu]+set} ]]; then
