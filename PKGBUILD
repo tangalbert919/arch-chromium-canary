@@ -8,6 +8,7 @@ pkgver=125.0.6415.0
 pkgrel=1
 _launcher_ver=8
 _gcc_patchset=1
+_use_libcxx=1
 pkgdesc="A web browser built for speed, simplicity, and security"
 arch=('x86_64')
 url="https://www.chromium.org/Home"
@@ -71,7 +72,7 @@ declare -gA _system_libs=(
 )
 
 # Unbundle only without libc++, as libc++ is not fully ABI compatible with libstdc++
-if [[ ${FORCE_LIBCXX} != yes ]]; then
+if (( !_use_libcxx )); then
   _system_libs+=(
     [jsoncpp]=jsoncpp
     #[re2]=re2  # //third_party/googletest:gtest_config needs //third_party/re2:re2_config
@@ -117,7 +118,7 @@ prepare() {
   #fi
 
   # Apply patches if libc++ is not used.
-  if [[ ${FORCE_LIBCXX} != yes ]]; then
+  if (( !_use_libcxx )); then
     patch -Np1 -i ../chromium-patches-*/chromium-117-material-color-include.patch
   fi
 
@@ -264,7 +265,7 @@ build() {
     _flags+=('icu_use_data_file=false')
   fi
 
-  if [[ ${FORCE_LIBCXX} == yes ]]; then
+  if [[ _use_libcxx ]]; then
     _flags+=('use_custom_libcxx=true')
   else
     _flags+=('use_custom_libcxx=false')
