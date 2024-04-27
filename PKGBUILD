@@ -44,7 +44,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             'c2bc4e65ed2a4e23528dd10d5c15bf99f880b7bbb789cc720d451b78098a7e12'
             # Hash(es) for custom patches
             'b3de01b7df227478687d7517f61a777450dca765756002c80c4915f271e2d961'
-            '3bd35dab1ded5d9e1befa10d5c6c4555fe0a76d909fb724ac57d0bf10cb666c1'
+            'e8eca0c437e390ae1d760aa0befcb858ca8d511da08362876a260be1f219e9e0'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -127,7 +127,7 @@ prepare() {
 
   # Custom or upstream patches.
   patch -Np1 -i ../compiler-rt-adjust-paths.patch
-  patch -Np1 -i ../drop-flag-unsupported-by-clang17.patch
+  patch -Np0 -i ../drop-flag-unsupported-by-clang17.patch
 
   # Link to system tools required by the build
   mkdir -p third_party/node/linux/node-linux-x64/bin
