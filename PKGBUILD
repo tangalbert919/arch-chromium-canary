@@ -36,6 +36,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         # Custom patches (might be from upstream)
         compiler-rt-adjust-paths.patch
         drop-flag-unsupported-by-clang17.patch
+        chromium-126-xslt.patch
         )
 
 sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${pkgver}.tar.xz.hashes | grep sha256 | cut -d ' ' -f3)"
@@ -45,6 +46,7 @@ sha256sums=("$(curl -sL https://commondatastorage.googleapis.com/chromium-browse
             # Hash(es) for custom patches
             'b3de01b7df227478687d7517f61a777450dca765756002c80c4915f271e2d961'
             'e8eca0c437e390ae1d760aa0befcb858ca8d511da08362876a260be1f219e9e0'
+            '8cc18d52758857bdd242c0eb301aaef4f8aa0ec6e9685958ca56fea6f26a70e9'
             )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -128,6 +130,7 @@ prepare() {
   # Custom or upstream patches.
   patch -Np1 -i ../compiler-rt-adjust-paths.patch
   patch -Np0 -i ../drop-flag-unsupported-by-clang17.patch
+  patch -Np2 -i ../chromium-126-xslt.patch
 
   # Link to system tools required by the build
   mkdir -p third_party/node/linux/node-linux-x64/bin

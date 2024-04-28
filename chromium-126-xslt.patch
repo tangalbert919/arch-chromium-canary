@@ -1,0 +1,10 @@
+--- src/chromium-126.0.6443.0/third_party/blink/renderer/core/xml/xslt_extensions.cc.orig	2024-04-27 20:46:51.229148100 -0500
++++ src/chromium-126.0.6443.0/third_party/blink/renderer/core/xml/xslt_extensions.cc	2024-04-27 20:46:53.814461100 -0500
+@@ -32,6 +32,7 @@
+ #include <libxslt/xsltutils.h>
+ 
+ #include "base/check.h"
++#include <stdlib.h>
+ 
+ namespace blink {
+ 
